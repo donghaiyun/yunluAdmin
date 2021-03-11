@@ -2,14 +2,16 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import antd from 'ant-design-vue'
+import './plugins/element'
 import MyNav from '@/components/MyNav'
+import MyHeader from "@/components/MyHeader";
 
 Vue.component('MyNav',MyNav);
-Vue.config.productionTip = false
-Vue.use(antd);
+Vue.component('MyHeader',MyHeader)
+Vue.config.productionTip = false;
 new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
