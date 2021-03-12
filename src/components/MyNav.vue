@@ -136,6 +136,7 @@ export default {
   computed: {
     ...mapState(["menuHidden"]),//解构vuex
     navBarStyle() {
+      /*导航栏style对象*/
       let style = this.currentNavStyle;
       return {top: `${style.top}px`, height: `${style.height}px`, opacity: `${style.opacity}`};
     }
