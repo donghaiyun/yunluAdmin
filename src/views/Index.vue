@@ -1,5 +1,7 @@
 <template>
-  <div>111</div>
+  <div class="home">
+    <el-row></el-row>
+  </div>
 </template>
 
 <script>
@@ -8,6 +10,5 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
 </style>

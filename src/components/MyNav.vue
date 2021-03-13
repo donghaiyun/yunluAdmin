@@ -14,11 +14,13 @@
           <cite>主页</cite>
           <i class="el-icon-caret-bottom"></i>
         </a>
-        <dl class="nav-child">
-          <dd class="nav-child-item">
-            <router-link to="#">概况</router-link>
-          </dd>
-        </dl>
+        <el-collapse-transition>
+          <dl class="nav-child" v-show="navActive.home">
+            <dd class="nav-child-item">
+              <router-link to="#">概况</router-link>
+            </dd>
+          </dl>
+        </el-collapse-transition>
       </li>
       <li @mouseenter="setCurrentNav(1)">
         <a class="nav-item"
@@ -29,13 +31,15 @@
           <cite>商品</cite>
           <i class="el-icon-caret-bottom"></i>
         </a>
-        <dl class="nav-child">
-          <dd class="nav-child-item">
-            <router-link to="#">商品列表</router-link>
-            <router-link to="#">发布商品</router-link>
-            <router-link to="#">编辑商品</router-link>
-          </dd>
-        </dl>
+        <el-collapse-transition>
+          <dl class="nav-child" v-show="navActive.product">
+            <dd class="nav-child-item">
+              <router-link to="#">商品列表</router-link>
+              <router-link to="#">发布商品</router-link>
+              <router-link to="#">编辑商品</router-link>
+            </dd>
+          </dl>
+        </el-collapse-transition>
       </li>
       <li @mouseenter="setCurrentNav(2)">
         <a class="nav-item"
@@ -46,12 +50,14 @@
           <cite>订单</cite>
           <i class="el-icon-caret-bottom"></i>
         </a>
-        <dl class="nav-child">
-          <dd class="nav-child-item">
-            <router-link to="#">订单列表</router-link>
-            <router-link to="#">编辑订单</router-link>
-          </dd>
-        </dl>
+        <el-collapse-transition>
+          <dl class="nav-child" v-show="navActive.order">
+            <dd class="nav-child-item">
+              <router-link to="#">订单列表</router-link>
+              <router-link to="#">编辑订单</router-link>
+            </dd>
+          </dl>
+        </el-collapse-transition>
       </li>
       <li @mouseenter="setCurrentNav(3)">
         <a class="nav-item"
@@ -62,12 +68,14 @@
           <cite>客户</cite>
           <i class="el-icon-caret-bottom"></i>
         </a>
-        <dl class="nav-child">
-          <dd class="nav-child-item">
-            <router-link to="#">客户管理</router-link>
-            <router-link to="#">添加客户</router-link>
-          </dd>
-        </dl>
+        <el-collapse-transition>
+          <dl class="nav-child" v-show="navActive.client">
+            <dd class="nav-child-item">
+              <router-link to="#">客户管理</router-link>
+              <router-link to="#">添加客户</router-link>
+            </dd>
+          </dl>
+        </el-collapse-transition>
       </li>
       <span class="nav-bar" :style="navBarStyle"></span>
     </ul>
@@ -190,12 +198,11 @@ nav.nav {
     }
 
     .nav-item i, .nav-item cite {
-      /*因事件委托需求，设置nav-item子元素属性穿透*/
+      /*因事件委托需求，防止子元素折叠父级元素，设置nav-item子元素属性穿透*/
       pointer-events: none
     }
 
     .nav-child {
-      display: none;
       .nav-child-item > a {
         display: block;
         line-height: 4rem;
@@ -242,10 +249,6 @@ nav.nav {
 
   .nav-item.active {
     color: #fff;
-  }
-
-  .nav-item.active + .nav-child {
-    display: block;
   }
 
   .nav-item.active .el-icon-caret-bottom {

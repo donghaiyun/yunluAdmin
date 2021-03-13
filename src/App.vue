@@ -2,7 +2,7 @@
   <div id="app">
     <my-header></my-header>
     <my-nav></my-nav>
-    <router-view/>
+    <my-main></my-main>
   </div>
 </template>
 

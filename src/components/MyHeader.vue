@@ -1,20 +1,37 @@
 <template>
   <header class="header">
     <ul class="nav nav-left" :class="menuHidden?'menuHidden':''">
-      <li class="nav-item" @click="isHiddenMenu">
+      <li class="nav-item" @click="setMenuHidden(!menuHidden)">
         <i v-show="!menuHidden" class="el-icon-s-fold"></i>
         <i v-show="menuHidden" class="el-icon-s-unfold"></i>
       </li>
-<!--      <li v-show="menuHidden" class="nav-item el-icon-s-unfold" @click="isHiddenMenu"></li>-->
-      <li class="nav-item el-icon-s-promotion"></li>
+      <li class="nav-item el-icon-s-promotion hidden-xs-only"></li>
       <li class="nav-item el-icon-refresh-right"></li>
-      <li class="nav-item"><input class="search" type="text" placeholder="搜索..."></li>
+      <li class="nav-item hidden-xs-only">
+        <input class="search" type="text" placeholder="搜索...">
+      </li>
     </ul>
     <ul class="nav nav-right">
       <li class="nav-item el-icon-bell"></li>
-      <li class="nav-item el-icon-setting"></li>
-      <li class="nav-item el-icon-collection"></li>
-      <li class="nav-item el-icon-full-screen"></li>
+      <li class="nav-item el-icon-setting hidden-xs-only"></li>
+      <li class="nav-item el-icon-collection hidden-xs-only"></li>
+      <li class="nav-item el-icon-full-screen hidden-xs-only"></li>
+      <li class="nav-item mine">
+        <span>admin11221</span>
+        <i class="el-icon-caret-bottom"></i>
+        <div class="hidden">
+          <dl class="select">
+            <dd>
+              <router-link class="select-item" to="#">基本资料</router-link>
+            </dd>
+            <dd>
+              <router-link class="select-item" to="#">修改密码</router-link>
+            </dd>
+            <dd><a class="select-item" href="javascript:void(0)">退出</a></dd>
+          </dl>
+        </div>
+      </li>
+      <li class="nav-item el-icon-more-outline"></li>
     </ul>
   </header>
 </template>
@@ -24,29 +41,20 @@ import {mapMutations, mapState} from 'vuex'; //导入vuex
 export default {
   name: "MyHeader",
   data() {
-    return {
-      isMenuHidden: this.menuHidden,
-    }
+    return {}
   },
   methods: {
     ...mapMutations(['setMenuHidden']),//解构vuex
-    isHiddenMenu() {
-      if (this.menuHidden) {
-        this.setMenuHidden(false);
-      } else {
-        this.setMenuHidden(true);
-      }
-    }
   },
   computed: {
     ...mapState(["menuHidden"]),//解构vuex
-  }
+  },
 }
 </script>
 
 <style lang="scss">
 header.header {
-  z-index: 99999;
+  z-index: 10;
   position: fixed;
   top: 0;
   width: 100%;
@@ -60,6 +68,7 @@ header.header {
   .nav {
     padding: 0 1rem;
     display: inline-block;
+
     .nav-item {
       display: inline-block;
       padding: 0 2rem;
@@ -76,17 +85,88 @@ header.header {
       }
     }
   }
-  .nav-left{
+
+  .nav-left {
     position: absolute;
     left: 22rem;
     transition: left .3s;
+    font-size: 1.8rem;
   }
-  .nav.nav-right{
+
+  .nav.nav-right {
     float: right;
+
+    .mine {
+      white-space: nowrap;
+      position: relative;
+      font-size: 1.4rem;
+      width: 4rem;
+
+      span {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 4rem;
+        height: 2rem;
+        line-height: 3rem;
+      }
+
+      .hidden {
+        display: none;
+        position: absolute;
+        z-index: 999;
+        transition: all .2s;
+        height: 12rem;
+        top: 100%;
+        left: 0;
+        padding-top: 1rem;
+        animation: move .2s ease;
+        animation-fill-mode: both;
+      }
+
+      .select {
+        background-color: #fff;
+        color: #333;
+        display: flex;
+        flex-flow: column;
+        justify-content: space-between;
+        border: 1px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
+
+        .select-item {
+          display: block;
+          height: 3.6rem;
+          line-height: 3.6rem;
+          padding: 0 1.5rem;
+          text-align: center;
+        }
+
+        .select-item:hover {
+          background-color: #f2f2f2;
+        }
+      }
+    }
+
+    @keyframes move {
+      from {
+        display: none;
+        top: 150%;
+        opacity: 0;
+      }
+      to {
+        display: block;
+        top: 100%;
+        opacity: 1;
+      }
+    }
+
+    .mine:hover .hidden {
+      display: block;
+    }
   }
 }
 
-header.header>.nav-left.menuHidden {
+header.header > .nav-left.menuHidden {
   left: 6rem;
 }
 </style>

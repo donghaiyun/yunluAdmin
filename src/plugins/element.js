@@ -1,4 +1,8 @@
 import Vue from 'vue';
+import 'element-ui/lib/theme-chalk/base.css';
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+
 import {
   Pagination,
   Dialog,
@@ -79,6 +83,7 @@ import {
   Notification
 } from 'element-ui';
 
+Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.use(Pagination);
 Vue.use(Dialog);
 Vue.use(Autocomplete);
@@ -154,7 +159,6 @@ Vue.use(PageHeader);
 Vue.use(CascaderPanel);
 
 Vue.use(Loading.directive);
-
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
