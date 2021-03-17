@@ -1,13 +1,12 @@
 <template>
-  <nav class="nav">
+  <nav class="nav" >
     <div class="logo">Q</div>
     <ul class="nav-tree"
-        :class="menuHidden?'hidden':''"
         @click="navItemClick" ref="nav"
         @mouseleave="hiddenNavBar">
       <li @mouseenter="setCurrentNav(0)">
         <a class="nav-item"
-           :class="navActive.home?'active':''"
+           :class="{'active':navActive.home}"
            data-name="home"
            href="javascript:void(0)">
           <i class="icon el-icon-s-home"></i>
@@ -17,14 +16,14 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.home">
             <dd class="nav-child-item">
-              <router-link to="#">概况</router-link>
+              <router-link to="/" :class="{'active':route==='/'}">概况</router-link>
             </dd>
           </dl>
         </el-collapse-transition>
       </li>
       <li @mouseenter="setCurrentNav(1)">
         <a class="nav-item"
-           :class="navActive.product?'active':''"
+           :class="{'active':navActive.product}"
            data-name="product"
            href="javascript:void(0)">
           <i class="icon el-icon-s-goods"></i>
@@ -43,7 +42,7 @@
       </li>
       <li @mouseenter="setCurrentNav(2)">
         <a class="nav-item"
-           :class="navActive.order?'active':''"
+           :class="{'active':navActive.order}"
            data-name="order"
            href="javascript:void(0)">
           <i class="icon el-icon-s-order"></i>
@@ -61,7 +60,7 @@
       </li>
       <li @mouseenter="setCurrentNav(3)">
         <a class="nav-item"
-           :class="navActive.client?'active':''"
+           :class="{'active':navActive.client}"
            data-name="client"
            href="javascript:void(0)">
           <i class="icon el-icon-user-solid"></i>
@@ -95,8 +94,8 @@ export default {
         client: false
       },
       currentNav: 0,
-      currentNavStyle: {}
-
+      currentNavStyle: {},
+      route:'/',
     }
   },
   methods: {
@@ -114,6 +113,7 @@ export default {
       } else {
         this.navActive[val] = true;
       }
+      this.$store.commit('setOpenAside',true);
     },
     setCurrentNav(index) {
       /*记录鼠标移动导航是的状态*/
@@ -139,39 +139,37 @@ export default {
       this.currentNavStyle.height = 0;
       this.currentNavStyle.top += 28;
       this.currentNavStyle.opacity = 0.5;
-    }
+    },
   },
   computed: {
-    ...mapState(["menuHidden"]),//解构vuex
+    ...mapState(["openAside"]),//解构vuex
     navBarStyle() {
-      /*导航栏style对象*/
+      /*导航栏左侧划线style对象*/
       let style = this.currentNavStyle;
       return {top: `${style.top}px`, height: `${style.height}px`, opacity: `${style.opacity}`};
     }
-  }
+  },
+  watch: {
+    '$route'(to) {
+      /*监视路由跳转*/
+      this.route = to.path;
+    }
+  },
+
 }
 </script>
 
 <style lang="scss">
-nav.nav {
+nav {
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
+  z-index: 9999999;
   background-color: #20222A;
   color: rgba(255, 255, 255, .7);
-
-  //隐藏左边导航部分按钮
-  .hidden > li > a > cite,
-  .hidden > li > a > .el-icon-caret-bottom,
-  .hidden > li > dl > dd {
-    display: none;
-  }
-
-  ul.hidden {
-    width: 6rem;
-    transition: all .3s;
-  }
+  transition: all .3s;
+  overflow: hidden;
 
   .logo {
     height: 5rem;
@@ -185,7 +183,6 @@ nav.nav {
     width: 22rem;
     position: relative;
     color: rgba(255, 255, 255, .7);
-    transition: all .3s;
 
     .nav-item {
       overflow:hidden;
@@ -198,24 +195,24 @@ nav.nav {
     }
 
     .nav-item i, .nav-item cite {
-      /*因事件委托需求，防止子元素折叠父级元素，设置nav-item子元素属性穿透*/
-      pointer-events: none
+      /*因事件委托需求，防止子元素遮挡父级元素，设置nav-item子元素属性穿透*/
+      pointer-events: none;
     }
-
     .nav-child {
-      .nav-child-item > a {
-        display: block;
-        line-height: 4rem;
-        padding-left: 4.5rem;
+      .nav-child-item{
+        padding: 0.5rem 0;
         background-color: rgba(0, 0, 0, .3);
-      }
-
-      .nav-child-item > a.active {
-        color: #fff;
-        background-color: #009688;
+        a {
+          display: block;
+          line-height: 4rem;
+          padding-left: 4.5rem;
+        }
+        a.active {
+          color: #fff;
+          background-color: #009688;
+        }
       }
     }
-
     .nav-bar {
       width: 0.5rem;
       z-index: 999;
@@ -223,7 +220,7 @@ nav.nav {
       left: 0;
       top: 0;
       background-color: #009688;
-      transition: all .2s;
+      transition: all .3s;
     }
   }
 
@@ -256,5 +253,6 @@ nav.nav {
     color: rgba(255, 255, 255);
   }
 }
+
 
 </style>

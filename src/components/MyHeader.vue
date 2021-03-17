@@ -1,12 +1,12 @@
 <template>
   <header class="header">
-    <ul class="nav nav-left" :class="menuHidden?'menuHidden':''">
-      <li class="nav-item" @click="setMenuHidden(!menuHidden)">
-        <i v-show="!menuHidden" class="el-icon-s-fold"></i>
-        <i v-show="menuHidden" class="el-icon-s-unfold"></i>
+    <ul class="nav nav-left">
+      <li class="nav-item" title="侧边伸缩"
+          @click="setOpenAside(!openAside)">
+        <i :class="openAside?'el-icon-s-fold':'el-icon-s-unfold'"></i>
       </li>
-      <li class="nav-item el-icon-s-promotion hidden-xs-only"></li>
-      <li class="nav-item el-icon-refresh-right"></li>
+      <li class="nav-item el-icon-s-promotion hidden-xs-only" title="前台"></li>
+      <li class="nav-item el-icon-refresh-right" title="刷新"></li>
       <li class="nav-item hidden-xs-only">
         <input class="search" type="text" placeholder="搜索...">
       </li>
@@ -17,7 +17,7 @@
       <li class="nav-item el-icon-collection hidden-xs-only"></li>
       <li class="nav-item el-icon-full-screen hidden-xs-only"></li>
       <li class="nav-item mine">
-        <span>admin11221</span>
+        <span>{{username}}</span>
         <i class="el-icon-caret-bottom"></i>
         <div class="hidden">
           <dl class="select">
@@ -27,7 +27,10 @@
             <dd>
               <router-link class="select-item" to="#">修改密码</router-link>
             </dd>
-            <dd><a class="select-item" href="javascript:void(0)">退出</a></dd>
+            <dd>
+              <a class="select-item" href="javascript:void(0)"
+                 @click="logOut">退出</a>
+            </dd>
           </dl>
         </div>
       </li>
@@ -44,26 +47,36 @@ export default {
     return {}
   },
   methods: {
-    ...mapMutations(['setMenuHidden']),//解构vuex
+    ...mapMutations(['setOpenAside']),//解构vuex
+    logOut(){
+      /*退出登录函数*/
+      this.$store.commit('setIsLogin', false);
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      this.$router.push('/login');
+    }
   },
   computed: {
-    ...mapState(["menuHidden"]),//解构vuex
+    ...mapState(["openAside","username"]),//解构vuex
   },
 }
 </script>
 
 <style lang="scss">
 header.header {
-  z-index: 10;
+  z-index: 99;
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   height: 5rem;
   line-height: 5rem;
   font-size: 1.6rem;
   color: #333;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
-  transition: left 0.3s;
+  transition: all 0.3s;
 
   .nav {
     padding: 0 1rem;
@@ -88,7 +101,6 @@ header.header {
 
   .nav-left {
     position: absolute;
-    left: 22rem;
     transition: left .3s;
     font-size: 1.8rem;
   }
@@ -115,7 +127,7 @@ header.header {
         display: none;
         position: absolute;
         z-index: 999;
-        transition: all .2s;
+        transition: all .3s;
         height: 12rem;
         top: 100%;
         left: 0;
@@ -166,7 +178,4 @@ header.header {
   }
 }
 
-header.header > .nav-left.menuHidden {
-  left: 6rem;
-}
 </style>

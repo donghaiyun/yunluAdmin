@@ -1,0 +1,109 @@
+@charset "UTF-8";
+body, html, #app {
+  height: 100%;
+}
+
+html {
+  font-size: 62.5%;
+}
+html body {
+  font-size: 1.4rem;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+html body a {
+  color: inherit;
+}
+html body a:focus {
+  border: none;
+  outline: none;
+}
+
+.card {
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin: 0.5rem;
+}
+.card .card-header {
+  position: relative;
+  padding: 0 1.5rem;
+  height: 4.2rem;
+  line-height: 4.2rem;
+  border-bottom: 1px solid #f6f6f6;
+}
+.card .card-body {
+  position: relative;
+  padding: 1rem 1.5rem;
+  line-height: 2.4rem;
+  text-align: center;
+}
+.card .card-body .card-body-item {
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+.card .card-body .card-body-item:hover {
+  background-color: #f2f2f2;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+@media screen and (max-width: 991.99px) {
+  #app {
+    position: relative;
+  }
+
+  .mask {
+    /*遮罩样式*/
+    position: absolute;
+    z-index: 99;
+    display: none;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .closeAside nav {
+    transform: translateX(-22rem);
+  }
+  .closeAside header .nav-left {
+    left: 0;
+  }
+
+  .openAside .mask {
+    display: block;
+  }
+  .openAside header, .openAside main {
+    transform: translateX(22rem);
+  }
+
+  nav {
+    width: 22rem;
+  }
+}
+@media screen and (min-width: 992px) {
+  .closeAside header .nav-left {
+    left: 6rem;
+  }
+  .closeAside nav {
+    width: 6rem;
+  }
+  .closeAside nav .el-icon-caret-bottom, .closeAside nav cite, .closeAside nav .nav-child {
+    display: none;
+  }
+  .closeAside main {
+    left: 6rem;
+  }
+
+  .openAside header .nav-left {
+    left: 22rem;
+  }
+  .openAside nav {
+    width: 22rem;
+  }
+  .openAside main {
+    left: 22rem;
+  }
+}
+
+/*# sourceMappingURL=common.css.map */
