@@ -33,7 +33,7 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.product">
             <dd class="nav-child-item">
-              <router-link to="#">商品列表</router-link>
+              <router-link to="/productList" :class="{'active':route==='/productList'}">商品列表</router-link>
               <router-link to="#">发布商品</router-link>
               <router-link to="#">编辑商品</router-link>
             </dd>

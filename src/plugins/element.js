@@ -14,6 +14,7 @@ import {
   Checkbox,
   ButtonGroup,
   Table,
+  TableColumn,
   Form,
   FormItem,
   Tabs,
@@ -43,6 +44,7 @@ Vue.use(RadioButton);
 Vue.use(Checkbox);
 Vue.use(ButtonGroup);
 Vue.use(Table);
+Vue.use(TableColumn);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Tabs);

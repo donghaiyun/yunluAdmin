@@ -127,6 +127,15 @@
               </div>
             </div>
           </el-col>
+          <el-col xs="24" :sm="24">
+            <div class="card data">
+              <div class="card-header">
+                数据概览
+              </div>
+              <div class="card-body">
+              </div>
+            </div>
+          </el-col>
         </el-row>
       </el-col>
       <el-col :xs="24" :md="8">
@@ -136,7 +145,17 @@
           </div>
           <div class="card-body">
             <ul>
-              <li v-for="(item,index) of 9" :key="index">{{ index+1 }}. 吃饭睡觉打豆豆</li>
+              <li v-for="(item,index) of 6" :key="index">{{ index+1 }}. 吃饭睡觉打豆豆</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card todo">
+          <div class="card-header">
+            待办事项
+          </div>
+          <div class="card-body">
+            <ul>
+              <li v-for="(item,index) of 6" :key="index">{{ index+1 }}. 吃饭睡觉打豆豆</li>
             </ul>
           </div>
         </div>
@@ -191,6 +210,11 @@ export default {
     }
     .totalMoney .card-item-content{
       color: #f55e5e;
+    }
+    .data{
+      .card-body{
+        height: 10rem;
+      }
     }
   }
   .shortcut{

@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '@/views/Index'
-//懒加载路由
 import Login from "@/views/Login";
+//懒加载路由
+const ProductList=()=>import("@/views/product/ProductList");
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,6 +20,14 @@ const routes = [
     name: 'Login',
     component: Login
   },
+  {
+    path: '/productList',
+    name:'ProductList',
+    component: ProductList,
+    meta:{
+      requiresAuth:true
+    }
+  }
 ]
 
 const router = new VueRouter({
