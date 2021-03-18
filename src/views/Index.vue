@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="card">
-      <h1 class="shop-title">我的店铺</h1>
+      <h1 class="title">我的店铺</h1>
     </div>
     <el-row class="home-content">
       <el-col :xs=24 :md="16">
@@ -127,7 +127,7 @@
               </div>
             </div>
           </el-col>
-          <el-col xs="24" :sm="24">
+          <el-col :xs="24" :sm="24">
             <div class="card data">
               <div class="card-header">
                 数据概览
@@ -180,12 +180,6 @@ export default {
   width: 100%;
   height: 100%;
   color: #666;
-  overflow-y: auto;
-  .shop-title{
-    font-size: 2rem;
-    font-weight: bolder;
-    padding: 1.5rem;
-  }
   .home-content{
     .card{
       .card-body-item{

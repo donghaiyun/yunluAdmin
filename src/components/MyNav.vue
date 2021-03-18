@@ -16,7 +16,11 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.home">
             <dd class="nav-child-item">
-              <router-link to="/" :class="{'active':route==='/'}">概况</router-link>
+              <a href="javascript:void(0)"
+                 :class="{'active':route==='/'}"
+                 data-name="route" data-path="/">
+                概况
+              </a>
             </dd>
           </dl>
         </el-collapse-transition>
@@ -33,8 +37,18 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.product">
             <dd class="nav-child-item">
-              <router-link to="/productList" :class="{'active':route==='/productList'}">商品列表</router-link>
-              <router-link to="#">发布商品</router-link>
+              <a href="javascript:void(0)"
+                 :class="{'active':route==='/productList'}"
+                 data-name="route" data-path="/productList"
+              >
+                商品列表
+              </a>
+              <a href="javascript:void(0)"
+                 :class="{'active':route==='/releaseProduct'}"
+                 data-name="route" data-path="/releaseProduct"
+              >
+                发布商品
+              </a>
               <router-link to="#">编辑商品</router-link>
             </dd>
           </dl>
@@ -105,7 +119,7 @@ export default {
       return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ');
     },
     navItemClick(event) {
-      /*导航栏点击事件，使用事件委托*/
+      /*导航栏点击事件，使用事件委托控制样式渲染和路由跳转*/
       let val = event.target.dataset.name;
       if (this.hasClass(event.target, 'active')) {
         //判断元素是否包含active属性，通过修改对象属性控制添加移除
@@ -114,6 +128,15 @@ export default {
         this.navActive[val] = true;
       }
       this.$store.commit('setOpenAside',true);
+      if(event.target.dataset.name==='route'){
+        let path=event.target.dataset.path;
+        //获取自定义属性，跳转路由
+        this.$router.push(path);
+        if (window.innerWidth<992){
+          //小屏时，路由跳转后关闭导航栏
+          this.$store.commit('setOpenAside',false);
+        }
+      }
     },
     setCurrentNav(index) {
       /*记录鼠标移动导航是的状态*/

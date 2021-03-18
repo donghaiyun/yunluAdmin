@@ -26,6 +26,7 @@ export default {
   padding: 1rem;
   background-color: #f2f2f2;
   transition: all .3s;
+  overflow-y: auto;
 }
 
 </style>

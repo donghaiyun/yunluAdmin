@@ -4,6 +4,12 @@ import 'element-ui/lib/theme-chalk/base.css';
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 
 import {
+  Option,
+  Select,
+  Steps,
+  Step,
+  Tooltip,
+  Button,
   Menu,
   Submenu,
   Input,
@@ -12,9 +18,11 @@ import {
   RadioGroup,
   RadioButton,
   Checkbox,
+  CheckboxGroup,
   ButtonGroup,
   Table,
   TableColumn,
+  Popover,
   Form,
   FormItem,
   Tabs,
@@ -34,6 +42,12 @@ import {
 } from 'element-ui';
 
 Vue.component(CollapseTransition.name, CollapseTransition);
+Vue.use(Option);
+Vue.use(Select);
+Vue.use(Steps);
+Vue.use(Step);
+Vue.use(Tooltip);
+Vue.use(Button);
 Vue.use(Menu);
 Vue.use(Submenu);
 Vue.use(Input);
@@ -42,9 +56,11 @@ Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(RadioButton);
 Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
 Vue.use(ButtonGroup);
 Vue.use(Table);
 Vue.use(TableColumn);
+Vue.use(Popover);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Tabs);

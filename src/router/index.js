@@ -4,6 +4,7 @@ import Index from '@/views/Index'
 import Login from "@/views/Login";
 //懒加载路由
 const ProductList=()=>import("@/views/product/ProductList");
+const ReleaseProduct=()=>import("@/views/product/ReleaseProduct")
 Vue.use(VueRouter)
 
 const routes = [
@@ -24,6 +25,14 @@ const routes = [
     path: '/productList',
     name:'ProductList',
     component: ProductList,
+    meta:{
+      requiresAuth:true
+    }
+  },
+  {
+    path: '/releaseProduct',
+    name:'ReleaseProduct',
+    component: ReleaseProduct,
     meta:{
       requiresAuth:true
     }
