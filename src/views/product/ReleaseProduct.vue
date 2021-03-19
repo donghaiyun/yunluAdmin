@@ -48,7 +48,6 @@
             <el-button type="primary"
                        @click="nextForm('productForm')">下一步
             </el-button>
-            <!--            <el-button type="primary" @click="submitForm('productForm')">下一步</el-button>-->
             <el-button
                 @click="resetForm('productForm')">重置
             </el-button>
@@ -58,50 +57,18 @@
         <el-form v-if="active===1" :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px"
                  class="demo-dynamic">
           <el-form-item
-              prop="email"
-              label="邮箱"
-
-          >
-            <el-input v-model="dynamicValidateForm.email"></el-input>
-          </el-form-item>
-          <el-form-item
-              prop="price"
-              label="价格"
-              :rules="{
-              spec:[
-                  { required: true, message: '请输入规格', trigger: 'blur' },
-                  { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-                ],
-                price:[
-                    { required: true, message: '请输入价格', trigger: 'blur' },
-                  { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-                ]
-          }"
-          >
-            <el-input v-model="dynamicValidateForm.price"></el-input>
-          </el-form-item>
-          <el-form-item
               v-for="(domain, index) in dynamicValidateForm.domains"
-              :label="'域名' + index"
-              :key="domain.key"
-              :prop="'domains.' + index + '.value'"
-              :rules="{
-            spec:[
-                { required: true, message: '请输入规格', trigger: 'blur' },
-                { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-              ],
-              price:[
-                  { required: true, message: '请输入价格', trigger: 'blur' },
-                { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-              ]
-          }"
+              prop="domains"
           >
-            <el-input v-model="domain.spec"></el-input>
-            <el-input v-model="domain.price"></el-input>
-            <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+            <div class="spec">
+              <span>规格{{ index + 1 }}：<el-input label="规格" v-model="domain.spec"></el-input></span>
+              <span>价格：<el-input v-model="domain.price"></el-input></span>
+              <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+            </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm1('dynamicValidateForm')">提交</el-button>
+            <el-button type="primary" @click="prevForm('dynamicValidateForm')">上一页</el-button>
+            <el-button type="primary" @click="nextForm('dynamicValidateForm')">下一页</el-button>
             <el-button @click="addDomain">新增规格</el-button>
             <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
           </el-form-item>
@@ -127,8 +94,11 @@ export default {
       },
       dynamicValidateForm: {
         domains: [{
-          spec: '111',
-          price:'222'
+          spec: '1斤',
+          price: '3元'
+        }, {
+          spec: '3斤',
+          price: '10元'
         }],
         email: '',
       },
@@ -154,6 +124,9 @@ export default {
     }
   },
   methods: {
+    prevForm() {
+      this.active--;
+    },
     nextForm(formName) {
       /*跳转到下一个form表单*/
       this.$refs[formName].validate((valid) => {
@@ -199,9 +172,10 @@ export default {
     addDomain() {
       this.dynamicValidateForm.domains.push({
         spec: '',
-        price:'',
-        key: Date.now()
-      });
+        price: '',
+        // key: Date.now()
+      }),
+          console.log(this.dynamicValidateForm.domains);
     }
   }
 }
@@ -226,6 +200,29 @@ export default {
 
   .el-form {
     padding-bottom: 4rem;
+
+    .spec {
+      display: flex;
+      width: 60rem;
+      justify-content: start;
+      align-items: center;
+      height: 4rem;
+
+      span {
+        display: flex;
+        align-items: center;
+        margin: 0 1rem;
+
+        .el-input {
+          width: 10rem;
+        }
+      }
+
+      .el-button {
+        margin-left: 3rem;
+      }
+
+    }
   }
 }
 </style>
