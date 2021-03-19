@@ -44,6 +44,10 @@
               <el-radio label="暂无现货"></el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item label="产地" prop="area">
+            <el-input style="width: 60%" v-model="productForm.area"
+                      placeholder="请输入商品生产地区"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary"
                        @click="nextForm('productForm')">下一步
@@ -53,26 +57,65 @@
             </el-button>
           </el-form-item>
         </el-form>
-
-        <el-form v-if="active===1" :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px"
-                 class="demo-dynamic">
+        <el-form v-if="active===1" :model="specForm" ref="specForm"
+                 class="form-spec">
           <el-form-item
-              v-for="(domain, index) in dynamicValidateForm.domains"
+              v-for="(domain, index) in specForm.domains"
               prop="domains"
           >
-            <div class="spec">
-              <span>规格{{ index + 1 }}：<el-input label="规格" v-model="domain.spec"></el-input></span>
-              <span>价格：<el-input v-model="domain.price"></el-input></span>
-              <el-button @click.prevent="removeDomain(domain)">删除</el-button>
-            </div>
+          <div class="spec">
+            <div class="spec-item"><span>规格{{ index + 1 }}</span><el-input label="规格" v-model="domain.spec"></el-input></div>
+            <div class="spec-item"><span>价格</span><el-input v-model="domain.price"></el-input></div>
+            <el-button type="warning" icon="el-icon-delete"
+                       circle
+                       @click.prevent="removeDomain(domain)">
+            </el-button>
+          </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="prevForm('dynamicValidateForm')">上一页</el-button>
-            <el-button type="primary" @click="nextForm('dynamicValidateForm')">下一页</el-button>
+            <el-button type="primary" @click="prevForm('specForm')">上一页</el-button>
+            <el-button type="primary" @click="nextForm('specForm')">下一页</el-button>
             <el-button @click="addDomain">新增规格</el-button>
-            <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
           </el-form-item>
         </el-form>
+        <div class="upload" v-if="active===2">
+          <h1>上传主图片（限一张）：</h1>
+          <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :auto-upload="false">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
+          <h1>上传商品顶部轮播图片：</h1>
+          <el-upload
+              action="#"
+              list-type="picture-card"
+              :auto-upload="false">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
+          <h1>上传详情页图片：</h1>
+          <el-upload
+              action="#"
+              list-type="picture-card"
+              :auto-upload="false">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
+          <div class="button">
+            <el-button type="primary" @click="prevForm('specForm')">上一页</el-button>
+            <el-button type="primary" @click="nextForm('specForm')">下一页</el-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,15 +127,21 @@ export default {
   data() {
     return {
       active: 1,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false,
+      imageUrl: '',
+      fileList:[],
       productForm: {
         name: '',
         title: '',
         category: '',
         service: [],
         resource: '',
-        isActual: ''
+        isActual: '',
+        area:''
       },
-      dynamicValidateForm: {
+      specForm: {
         domains: [{
           spec: '1斤',
           price: '3元'
@@ -101,6 +150,8 @@ export default {
           price: '10元'
         }],
         email: '',
+        dateStart:'',
+        dateEnd:'',
       },
       rules: {
         name: [
@@ -120,10 +171,17 @@ export default {
         isActual: [
           {required: true, message: '请选择是否有现货', trigger: 'change'}
         ],
+        area: [
+          {required: true, message: '请输入商品生产地区', trigger: 'blur'},
+          {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
+        ]
       }
     }
   },
   methods: {
+    abc(file,fileList){
+      console.log(fileList)
+    },
     prevForm() {
       this.active--;
     },
@@ -160,29 +218,28 @@ export default {
         }
       });
     },
-    // resetForm(formName) {
-    //   this.$refs[formName].resetFields();
-    // },
     removeDomain(item) {
-      var index = this.dynamicValidateForm.domains.indexOf(item)
+      let index = this.specForm.domains.indexOf(item)
       if (index !== -1) {
-        this.dynamicValidateForm.domains.splice(index, 1)
+        this.specForm.domains.splice(index, 1)
       }
     },
     addDomain() {
-      this.dynamicValidateForm.domains.push({
+      this.specForm.domains.push({
         spec: '',
         price: '',
-        // key: Date.now()
-      }),
-          console.log(this.dynamicValidateForm.domains);
-    }
+        key: Date.now()
+      })
+    },
   }
 }
 </script>
 
 <style lang="scss">
 .release-product {
+  .card{
+    text-align: left;
+  }
   .el-steps {
     box-sizing: border-box;
     background-color: #fff;
@@ -203,25 +260,37 @@ export default {
 
     .spec {
       display: flex;
-      width: 60rem;
+      min-width: 45rem;
       justify-content: start;
       align-items: center;
       height: 4rem;
 
-      span {
+      div {
         display: flex;
         align-items: center;
         margin: 0 1rem;
-
         .el-input {
           width: 10rem;
         }
       }
-
-      .el-button {
-        margin-left: 3rem;
+      .spec-item::before {
+        content: '*';
+        color: #F56C6C;
+        margin-right: 4px;
       }
 
+      .el-button {
+        margin-left: 1rem;
+      }
+    }
+  }
+  .upload{
+    h1{
+      font-size: 1.8rem;
+      padding: 1rem 0;
+    }
+    .button{
+      margin-top: 2rem;
     }
   }
 }

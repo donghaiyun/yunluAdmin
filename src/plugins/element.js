@@ -4,6 +4,9 @@ import 'element-ui/lib/theme-chalk/base.css';
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 
 import {
+  Dialog,
+  DatePicker,
+  TimePicker,
   Option,
   Select,
   Steps,
@@ -42,6 +45,9 @@ import {
 } from 'element-ui';
 
 Vue.component(CollapseTransition.name, CollapseTransition);
+Vue.use(Dialog);
+Vue.use(TimePicker)
+Vue.use(DatePicker)
 Vue.use(Option);
 Vue.use(Select);
 Vue.use(Steps);
