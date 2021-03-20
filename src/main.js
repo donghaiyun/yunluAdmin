@@ -9,7 +9,6 @@ import './assets/css/common.css'
 import MyNav from '@/components/MyNav'
 import MyHeader from "@/components/MyHeader";
 import MyMain from "@/components/MyMain";
-
 Vue.use(axios); //使用二次封装的axios
 
 //注册页头导航和main为全局组件

@@ -27,25 +27,25 @@
       </li>
       <li @mouseenter="setCurrentNav(1)">
         <a class="nav-item"
-           :class="{'active':navActive.product}"
-           data-name="product"
+           :class="{'active':navActive.goods}"
+           data-name="goods"
            href="javascript:void(0)">
           <i class="icon el-icon-s-goods"></i>
           <cite>商品</cite>
           <i class="el-icon-caret-bottom"></i>
         </a>
         <el-collapse-transition>
-          <dl class="nav-child" v-show="navActive.product">
+          <dl class="nav-child" v-show="navActive.goods">
             <dd class="nav-child-item">
               <a href="javascript:void(0)"
-                 :class="{'active':route==='/productList'}"
-                 data-name="route" data-path="/productList"
+                 :class="{'active':route==='/goods/list'}"
+                 data-name="route" data-path="/goods/list"
               >
                 商品列表
               </a>
               <a href="javascript:void(0)"
-                 :class="{'active':route==='/releaseProduct'}"
-                 data-name="route" data-path="/releaseProduct"
+                 :class="{'active':route==='/goods/add'}"
+                 data-name="route" data-path="/goods/add"
               >
                 发布商品
               </a>
@@ -103,7 +103,7 @@ export default {
     return {
       navActive: {
         home: true,
-        product: false,
+        goods: false,
         order: false,
         client: false
       },

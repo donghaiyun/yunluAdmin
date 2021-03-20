@@ -105,81 +105,53 @@ export default {
   methods: {
     onLogin() {
       /*登录函数*/
-      const phone = this.userLogin.phone;
-      const password = this.userLogin.password;
+      const {phone,password} = this.userLogin
+
       if (!phone) {
-        this.$message.error({
-          message: '手机号或邮箱不允许为空！',
-          center: true
-        });
+        this.$message.error('手机号或邮箱不允许为空！');
         return;
       } else if (!password) {
-        this.$message.error({
-          message: '密码不允许为空！',
-          center: true
-        });
+        this.$message.error( '密码不允许为空！');
         return;
       }
       this.fullscreenLoading = true; //开启loading遮罩
-      this.axios.post('/user/login', {
-        phone: phone,
-        password: password,
-      }).then(result => {
-        let results = result.data;
-        if (results.code === 200) {
-          this.$message.success({
-            message: '登录成功！',
-            center: true
-          });
-          this.$router.push(this.$route.query.redirect || '/');
-        } else if (results.code === 401) {
+      (async ()=>{
+        const {data:res}=await this.axios.post('/user/login', {phone, password})
+        if (res.code === 200) {
+          this.$message.success('登录成功！');
+          await this.$router.push(this.$route.query.redirect|| '/');
+        } else if (res.code === 401) {
           this.$message.error('用户名或密码错误！');
         }
         this.fullscreenLoading = false; //关闭loading遮罩
-      })
+      })()
     },
     onRegister() {
       /*注册函数*/
-      const phone = this.userRegister.phone;
-      const password = this.userRegister.password;
-      const relPassword = this.userRegister.relPassword;
-      let username = this.userRegister.username;
-
+      let {phone,password,relPassword,username}=this.userRegister;
       let errMsg = '';
       if (password !== relPassword) errMsg = '两次输入密码不一致！';
       if (!password) errMsg = '密码不允许为空！';
       if (!/^1[3-9]\d{9}$/.test(phone)) errMsg = '请检查手机号是否正确！';
       if (!phone) errMsg = '手机号不允许为空！';
       if (!username) username = phone.slice(0, 3) + '****' + phone.slice(7);//如果昵称为空，设置默认昵称
-      if (errMsg !== '') {
-        this.$message.error({
-          message: errMsg,
-          center: true
-        });
-        return;
+      if (errMsg !== ''){
+        return this.$message.error(errMsg);
       }
+
       this.fullscreenLoading = true;//开启loading遮罩
-      this.axios.post('/user/register', {
-        phone: phone,
-        password: password,
-        username: username
-      }).then(result => {
-        let results = result.data;
-        if (results.code === 200) {
-          this.$message.success({
-            message: '注册成功！',
-            center: true
-          });
+      (async ()=>{
+        const {data:res}=await this.axios.post('/user/register', {phone, password, username})
+        if (res.code === 200) {
+          this.$message.success('注册成功！');
           this.isLogin=true;
-        } else if (results.code === 401) {
-          this.$message.error({
-            message: '此手机号已存在！',
-            center: true
-          });
+        } else if (res.code === 401) {
+          this.$message.error( '此手机号已存在！');
+        }else{
+          this.$message.error( '注册失败！');
         }
-        this.
         this.fullscreenLoading = false; //关闭loading遮罩
-      })
+      })()
     },
   },
   watch:{

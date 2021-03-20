@@ -1,13 +1,13 @@
 <template>
-  <button class="myBtn">
-    <slot></slot>
-  </button>
+  <router-view></router-view>
 </template>
+
 <script>
 export default {
-  name: "MyButton",
+  name: "Goods"
 }
 </script>
+
 <style scoped>
 
 </style>

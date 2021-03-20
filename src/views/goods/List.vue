@@ -1,5 +1,6 @@
 <template>
   <div class="product-list">
+    <router-view></router-view>
     <div class="card">
       <h1 class="title">商品清单</h1>
     </div>

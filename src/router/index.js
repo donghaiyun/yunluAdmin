@@ -2,9 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '@/views/Index'
 import Login from "@/views/Login";
+import * as path from "path";
 //懒加载路由
-const ProductList=()=>import("@/views/product/ProductList");
-const ReleaseProduct=()=>import("@/views/product/ReleaseProduct")
+const Goods=()=>import("@/views/goods/Goods")
+const List=()=>import("@/views/goods/List");
+const Add=()=>import("@/views/goods/Add")
 Vue.use(VueRouter)
 
 const routes = [
@@ -22,21 +24,25 @@ const routes = [
     component: Login
   },
   {
-    path: '/productList',
-    name:'ProductList',
-    component: ProductList,
+    path: '/goods',
+    name:'Goods',
+    component: Goods,
+    children:[
+      {path:'add', name:'Add', component:Add},
+      {path:'list', name:'List', component:List}
+    ],
     meta:{
       requiresAuth:true
     }
   },
-  {
-    path: '/releaseProduct',
-    name:'ReleaseProduct',
-    component: ReleaseProduct,
-    meta:{
-      requiresAuth:true
-    }
-  }
+  // {
+  //   path: '/releaseGoods',
+  //   name:'ReleaseGoods',
+  //   component: ReleaseGoods,
+  //   meta:{
+  //     requiresAuth:true
+  //   }
+  // }
 ]
 
 const router = new VueRouter({
