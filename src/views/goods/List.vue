@@ -8,14 +8,14 @@
       <div class="card-header">
         <ul class="list-title" @click="selectState">
           <li class="title-item"
-              :class="{'active':select==='onSale'}"
-              data-name="onSale">出售中</li>
+              :class="{'active':status==='2'}"
+              data-id="2">出售中</li>
           <li class="title-item"
-              :class="{'active':select==='sellOut'}"
-              data-name="sellOut">已售罄</li>
+              :class="{'active':status==='0'}"
+              data-id="0">已售罄</li>
           <li class="title-item"
-              :class="{'active':select==='inWarehouse'}"
-              data-name="inWarehouse">仓库中</li>
+              :class="{'active':status==='1'}"
+              data-id="1">仓库中</li>
         </ul>
       </div>
       <div class="card-body">
@@ -42,9 +42,13 @@
               <el-popover placement="top-start" title="" trigger="hover">
                 <p v-for="(item,index) of scope.row.sku" :key="index">
                   <span>{{item.spec}}：</span>
-                  <span style="color: #FF5733;margin-left: 2rem">￥{{item.price}}</span>
+                  <span style="color: #FF5733;margin-left: 2rem">
+                    ￥{{Number(item.price).toFixed(2)}}
+                  </span>
                 </p>
-                <p class="price" slot="reference" style="width: 6rem">￥ {{scope.row.sku[0].price}}</p>
+                <p class="price" slot="reference" style="width: 6rem">
+                  ￥{{Number(scope.row.sku[0].price).toFixed(2)}}
+                </p>
               </el-popover>
             </template>
           </el-table-column>
@@ -105,8 +109,9 @@ export default {
   data(){
     return{
       multipleSelection: [],
-      select:'onSale',
-      tableData: [{
+      status:'2',
+      tableData:[],
+      test: [{
         name: '蛋糕',
         createTime: '2021-3-18',
         serialNo: '001',
@@ -126,7 +131,6 @@ export default {
           totalSale: 999,
           stock: 333,
           smPic:require('../../assets/image/product/sm.jpg'),
-          lgPic:require('../../assets/image/product/lg.jpg'),
           sku:[
             {spec:'1公斤',price:'30'},
             {spec:'3公斤',price:'100'}
@@ -140,19 +144,19 @@ export default {
           totalSale: 999,
           stock: 333,
           smPic:require('../../assets/image/product/sm.jpg'),
-          lgPic:require('../../assets/image/product/lg.jpg'),
           sku:[
             {spec:'1公斤',price:'50'},
             {spec:'3公斤',price:'150'}
           ]
-        },]
+        },],
+      picUrl:'http://localhost:5050/images/',
     }
   },
   methods:{
     selectState(event){
       /*选择展示商品的状态*/
       if(event.target.nodeName.toLowerCase()==='li'){
-        this.select=event.target.dataset.name;
+        this.status=event.target.dataset.id;
       }
     },
     handleClick(row) {
@@ -161,8 +165,47 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(this.multipleSelection)
+    },
+    getGoodsList(sid){
+      /*获取商品列表数据*/
+      (async ()=>{
+        const {data:res}=await this.axios.get('/goods/getGoodsList',{
+          params:{sid}
+        })
+        if(res.code===200){
+          let results=res.result;
+          //处理服务器返回的数据
+          results.forEach((item)=>{
+            item.smPic=this.picUrl+item.smPic;
+            let specs=item.spec.split(',');
+            let prices=item.price.split(',');
+            let sku=[];
+            specs.forEach((item,index)=>{
+              sku.push({
+                spec:item,
+                price:prices[index]
+              })
+            })
+            item.sku=sku;
+            item.price=sku[0].price;
+            item.serialNo=item.id;
+            delete item.spec;
+          })
+          this.tableData=results;
+        }else{
+        }
+      })()
     }
   },
+  mounted() {
+    this.getGoodsList(2);
+  },
+  watch:{
+    status(val){
+      this.tableData=[];
+      this.getGoodsList(val);
+    }
+  }
 }
 </script>
 
@@ -173,13 +216,13 @@ export default {
     font-size: 1.6rem;
     width: 30rem;
     .title-item{
-      color: #888;
+      color: #999;
       float: left;
       padding:0 1rem;
       cursor: pointer;
     }
     .title-item.active{
-      color: #409EFF;
+      color: #f55e5e;
     }
   }
   .card-body{
