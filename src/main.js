@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from "./axios";
+import moment from "moment";
 import './plugins/element'
 import 'element-ui/lib/theme-chalk/display.css';
 import './assets/css/common.css'
@@ -11,6 +12,7 @@ import MyHeader from "@/components/MyHeader";
 import MyMain from "@/components/MyMain";
 Vue.use(axios); //使用二次封装的axios
 
+Vue.prototype.moment=moment;
 //注册页头导航和main为全局组件
 Vue.component('MyNav',MyNav);
 Vue.component('MyHeader',MyHeader);

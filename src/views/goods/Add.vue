@@ -65,8 +65,15 @@
               <div class="spec-item"><span>规格{{ index + 1 }}</span>
                 <el-input label="规格" v-model="domain.spec"></el-input>
               </div>
-              <div class="spec-item"><span>价格(单位元)</span>
-                <el-input v-model="domain.price"></el-input>
+              <div class="price">
+                <div class="spec-item">
+                  <span>价格(元)</span>
+                  <el-input v-model="domain.price"></el-input>
+                </div>
+                <div class="spec-item">
+                  <span>库存(件)</span>
+                  <el-input v-model="domain.stock"></el-input>
+                </div>
               </div>
               <el-button type="warning" icon="el-icon-delete"
                          circle
@@ -245,7 +252,8 @@ export default {
         area: '', //生产地区
         skus: [{ //商品规格列表
           spec: '',
-          price: ''
+          price: '',
+          stock:''
         }],
         pics: { //图片对象
           smPic: [],
@@ -312,6 +320,7 @@ export default {
       this.goodsForm.skus.push({
         spec: '',
         price: '',
+        stock:'',
         key: Date.now()
       })
     },
@@ -389,12 +398,16 @@ export default {
       (async ()=>{
         const {data:res}=await this.axios.post('/goods/addGoods', this.goodsForm)
         if (res.code === 200) {
-          this.$message.success('添加商品到仓库成功！');
+          this.$notify({
+            title: 'ok',
+            message:'商品已添加至仓库',
+            type: 'success'
+          });
           await this.$router.push('/goods/list')
         }else{
           this.$message.error( '添加失败，请重试或联系管理员！');
         }
-        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+        this.$nextTick(() => { // 以服务的方式调用的 Loading
           loadingInstance.close();
         });
       })()
@@ -443,7 +456,7 @@ export default {
       min-width: 45rem;
       justify-content: start;
       align-items: center;
-      height: 4rem;
+      height: 8rem;
 
       div {
         display: flex;
@@ -460,7 +473,15 @@ export default {
         color: #F56C6C;
         margin-right: 4px;
       }
-
+      .price{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .spec-item.price>div{
+        display: flex;
+        justify-content: center;
+      }
       .el-button {
         margin-left: 1rem;
       }
@@ -468,7 +489,7 @@ export default {
   }
 
   .specBtn {
-    margin-top: 3rem;
+    margin-top: 2rem;
     margin-left: 3rem;
   }
 

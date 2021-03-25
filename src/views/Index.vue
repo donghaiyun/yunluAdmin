@@ -64,7 +64,7 @@
               <div class="card-body">
                 <el-row :gutter="15">
                   <el-col :xs="6" :sm="3">
-                    <router-link to="#">
+                    <router-link to="/goods/add">
                       <div class="card-body-item">
                         <div class="card-item-content">
                           <i class="el-icon-sell"></i>
@@ -74,7 +74,7 @@
                     </router-link>
                   </el-col>
                   <el-col :xs="6" :sm="3">
-                    <router-link to="#">
+                    <router-link to="/goods/list">
                       <div class="card-body-item">
                         <div class="card-item-content">
                           <i class="el-icon-setting"></i>
@@ -212,6 +212,7 @@ export default {
     }
   }
   .shortcut{
+    text-align: center;
     .card-item-content{
       text-align: center;
       padding: 1rem 0;

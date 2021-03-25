@@ -118,7 +118,11 @@ export default {
       (async ()=>{
         const {data:res}=await this.axios.post('/user/login', {phone, password})
         if (res.code === 200) {
-          this.$message.success('登录成功！');
+          this.$notify({
+            title: 'ok',
+            message: '登录成功',
+            type: 'success'
+          });
           await this.$router.push(this.$route.query.redirect|| '/');
         } else if (res.code === 401) {
           this.$message.error('用户名或密码错误！');
@@ -143,7 +147,11 @@ export default {
       (async ()=>{
         const {data:res}=await this.axios.post('/user/register', {phone, password, username})
         if (res.code === 200) {
-          this.$message.success('注册成功！');
+          this.$notify({
+            title: 'ok',
+            message: '注册成功',
+            type: 'success'
+          });
           this.isLogin=true;
         } else if (res.code === 401) {
           this.$message.error( '此手机号已存在！');

@@ -3,10 +3,14 @@ import VueRouter from 'vue-router'
 import Index from '@/views/Index'
 import Login from "@/views/Login";
 import * as path from "path";
+
 //懒加载路由
 const Goods=()=>import("@/views/goods/Goods")
 const List=()=>import("@/views/goods/List");
 const Add=()=>import("@/views/goods/Add")
+
+const User=()=>import("@/views/user/User");
+const Info=()=>import("@/views/user/Info")
 Vue.use(VueRouter)
 
 const routes = [
@@ -35,14 +39,17 @@ const routes = [
       requiresAuth:true
     }
   },
-  // {
-  //   path: '/releaseGoods',
-  //   name:'ReleaseGoods',
-  //   component: ReleaseGoods,
-  //   meta:{
-  //     requiresAuth:true
-  //   }
-  // }
+  {
+    path: '/user',
+    name:'User',
+    component: User,
+    children:[
+      {path:'info', name:'info', component:Info},
+    ],
+    meta:{
+      requiresAuth:true
+    }
+  },
 ]
 
 const router = new VueRouter({

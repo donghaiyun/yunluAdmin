@@ -1,6 +1,6 @@
 <template>
-  <nav class="nav" >
-    <div class="logo">Q</div>
+  <nav class="nav">
+    <div class="logo">{{ username }}</div>
     <ul class="nav-tree"
         @click="navItemClick" ref="nav"
         @mouseleave="hiddenNavBar">
@@ -43,13 +43,14 @@
               >
                 商品列表
               </a>
+            </dd>
+            <dd class="nav-child-item">
               <a href="javascript:void(0)"
                  :class="{'active':route==='/goods/add'}"
                  data-name="route" data-path="/goods/add"
               >
                 发布商品
               </a>
-              <router-link to="#">编辑商品</router-link>
             </dd>
           </dl>
         </el-collapse-transition>
@@ -66,8 +67,10 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.order">
             <dd class="nav-child-item">
-              <router-link to="#">订单列表</router-link>
-              <router-link to="#">编辑订单</router-link>
+              <a href="javascript:void(0)" @click="$message.error('该模块未完成')">订单列表</a>
+            </dd>
+            <dd class="nav-child-item">
+              <a href="javascript:void(0)" @click="$message.error('该模块未完成')">管理订单</a>
             </dd>
           </dl>
         </el-collapse-transition>
@@ -84,8 +87,30 @@
         <el-collapse-transition>
           <dl class="nav-child" v-show="navActive.client">
             <dd class="nav-child-item">
-              <router-link to="#">客户管理</router-link>
-              <router-link to="#">添加客户</router-link>
+              <a href="javascript:void(0)" @click="$message.error('该模块未完成')">客户管理</a>
+              <a href="javascript:void(0)" @click="$message.error('该模块未完成')">添加客户</a>
+            </dd>
+          </dl>
+        </el-collapse-transition>
+      </li>
+      <li @mouseenter="setCurrentNav(4)">
+        <a class="nav-item"
+           :class="{'active':navActive.user}"
+           data-name="user"
+           href="javascript:void(0)">
+          <i class="icon el-icon-s-shop"></i>
+          <cite>我的店铺</cite>
+          <i class="el-icon-caret-bottom"></i>
+        </a>
+        <el-collapse-transition>
+          <dl class="nav-child" v-show="navActive.user">
+            <dd class="nav-child-item">
+              <a href="javascript:void(0)"
+                 :class="{'active':route==='/user/info'}"
+                 data-name="route" data-path="/user/info"
+              >
+                我的信息
+              </a>
             </dd>
           </dl>
         </el-collapse-transition>
@@ -105,11 +130,12 @@ export default {
         home: true,
         goods: false,
         order: false,
-        client: false
+        client: false,
+        user: false
       },
       currentNav: 0,
       currentNavStyle: {},
-      route:'/',
+      route: '/'
     }
   },
   methods: {
@@ -121,20 +147,21 @@ export default {
     navItemClick(event) {
       /*导航栏点击事件，使用事件委托控制样式渲染和路由跳转*/
       let val = event.target.dataset.name;
-      if (this.hasClass(event.target, 'active')) {
-        //判断元素是否包含active属性，通过修改对象属性控制添加移除
+      if (this.hasClass(event.target, 'active') && this.openAside) {
+        //判断元素是否包含active属性，通过修改对象属性控制添加移除,
+        // 注：当侧边栏关闭时，不修改样式
         this.navActive[val] = false;
       } else {
         this.navActive[val] = true;
       }
-      this.$store.commit('setOpenAside',true);
-      if(event.target.dataset.name==='route'){
-        let path=event.target.dataset.path;
+      this.$store.commit('setOpenAside', true);
+      if (event.target.dataset.name === 'route') {
+        let path = event.target.dataset.path;
         //获取自定义属性，跳转路由
         this.$router.push(path);
-        if (window.innerWidth<992){
+        if (window.innerWidth < 992) {
           //小屏时，路由跳转后关闭导航栏
-          this.$store.commit('setOpenAside',false);
+          this.$store.commit('setOpenAside', false);
         }
       }
     },
@@ -165,7 +192,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["openAside"]),//解构vuex
+    ...mapState(["openAside", "username"]),//解构vuex
     navBarStyle() {
       /*导航栏左侧划线style对象*/
       let style = this.currentNavStyle;
@@ -177,8 +204,7 @@ export default {
       /*监视路由跳转*/
       this.route = to.path;
     }
-  },
-
+  }
 }
 </script>
 
@@ -192,7 +218,8 @@ nav {
   background-color: #20222A;
   color: rgba(255, 255, 255, .7);
   transition: all .3s;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .logo {
     height: 5rem;
@@ -208,7 +235,7 @@ nav {
     color: rgba(255, 255, 255, .7);
 
     .nav-item {
-      overflow:hidden;
+      overflow: hidden;
       height: 5.5rem;
       display: block;
       position: relative;
@@ -221,21 +248,29 @@ nav {
       /*因事件委托需求，防止子元素遮挡父级元素，设置nav-item子元素属性穿透*/
       pointer-events: none;
     }
+
     .nav-child {
-      .nav-child-item{
+      .nav-child-item {
         padding: 0.5rem 0;
         background-color: rgba(0, 0, 0, .3);
+
         a {
           display: block;
           line-height: 4rem;
           padding-left: 4.5rem;
         }
+
         a.active {
           color: #fff;
           background-color: #009688;
         }
+
+        a:hover {
+          color: #fff;
+        }
       }
     }
+
     .nav-bar {
       width: 0.5rem;
       z-index: 999;
@@ -275,6 +310,10 @@ nav {
     transform: rotate(-180deg) translateY(10px);
     color: rgba(255, 255, 255);
   }
+}
+
+nav::-webkit-scrollbar {
+  width: 0;
 }
 
 

@@ -6,19 +6,20 @@
         <i :class="openAside?'el-icon-s-fold':'el-icon-s-unfold'"></i>
       </li>
       <li class="nav-item el-icon-s-promotion hidden-xs-only" title="前台"></li>
-      <li class="nav-item el-icon-refresh-right" title="刷新"></li>
+      <li class="nav-item el-icon-refresh-right" title="刷新" @click="$router.go(0)"></li>
       <li class="nav-item hidden-xs-only">
         <input class="search" type="text" placeholder="搜索...">
       </li>
     </ul>
     <ul class="nav nav-right">
       <li class="nav-item el-icon-bell"></li>
-      <li class="nav-item el-icon-setting hidden-xs-only"></li>
+      <li class="nav-item el-icon-postcard hidden-xs-only"></li>
       <li class="nav-item el-icon-collection hidden-xs-only"></li>
-      <li class="nav-item el-icon-full-screen hidden-xs-only"></li>
+      <li class="nav-item el-icon-full-screen hidden-xs-only" @click="loadListener"></li>
       <li class="nav-item mine">
-        <span>{{username}}</span>
-        <i class="el-icon-caret-bottom"></i>
+        <span>
+          <i class="el-icon-setting"></i>
+        </span>
         <div class="hidden">
           <dl class="select">
             <dd>
@@ -56,6 +57,9 @@ export default {
       localStorage.removeItem("user");
       sessionStorage.removeItem("user");
       this.$router.push('/login');
+    },
+    loadListener() {
+      document.documentElement.webkitRequestFullscreen();
     }
   },
   computed: {
@@ -106,21 +110,19 @@ header.header {
   }
 
   .nav.nav-right {
-    float: right;
-
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
     .mine {
       white-space: nowrap;
       position: relative;
       font-size: 1.4rem;
-      width: 4rem;
-
+      height: 5rem;
       span {
         display: inline-block;
         overflow: hidden;
         white-space: nowrap;
-        width: 4rem;
-        height: 2rem;
-        line-height: 3rem;
       }
 
       .hidden {

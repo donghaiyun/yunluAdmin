@@ -9,11 +9,7 @@ const Axios=axios.create({
 Axios.interceptors.request.use(
   config=>{
     // console.log("进入请求拦截器...");
-    //this.axios.post(
-      //"user/signin",
-      //{uname:dingding , upwd:123456}
-    //)
-    if(config.method==="post"){
+    if(config.method==="post" || config.method==="put"){
       config.data=qs.stringify(config.data)
     }
     if(localStorage.getItem("token")){
@@ -42,7 +38,7 @@ Axios.interceptors.response.use(
     }else if(res.data.code===-1){
       store.commit("setIsLogin",false);
       store.commit("setUsername","");
-      //alert(res.data.msg+" 请先登录 !");
+      alert(res.data.msg+" 请先登录 !");
     }else if(res.data.token){
       store.commit("setUsername",res.data.result.username);
       store.commit("setIsLogin",true);
