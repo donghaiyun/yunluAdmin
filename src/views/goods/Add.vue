@@ -17,11 +17,11 @@
                  ref="goodsForm" label-position="left"
                  label-width="100px" class="demo-goodsForm">
           <el-form-item label="商品名称" prop="name">
-            <el-input style="width: 40%" v-model="goodsForm.name"
+            <el-input style="width: 60%" v-model="goodsForm.name"
                       placeholder="请输入商品名称"></el-input>
           </el-form-item>
           <el-form-item label="商品标题" prop="title">
-            <el-input style="width: 80%" v-model="goodsForm.title"
+            <el-input style="width: 60%" v-model="goodsForm.title"
                       placeholder="请输入商品标题"></el-input>
           </el-form-item>
           <el-form-item label="商品分类" prop="category_id">
@@ -46,7 +46,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="产地" prop="area">
-            <el-input style="width: 60%" v-model="goodsForm.area"
+            <el-input style="width: 40%" v-model="goodsForm.area"
                       placeholder="请输入商品生产地区"></el-input>
           </el-form-item>
           <el-form-item>
@@ -211,20 +211,8 @@
               </ul>
               <div class="button">
                 <el-button type="primary" @click="prevForm('specForm')">上一步</el-button>
-                <el-button type="primary" @click="centerDialogVisible=true">确认发布</el-button>
+                <el-button type="primary" @click="submitAll">确认发布</el-button>
               </div>
-              <el-dialog
-                  title="提示"
-                  :visible.sync="centerDialogVisible"
-                  width="30%"
-                  :modal="false"
-                  center>
-                <span>请确认是否提交，该操作会将商品数据提交仓库！</span>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="centerDialogVisible=false">取 消</el-button>
-                  <el-button type="primary" @click="submitAll">确 定</el-button>
-                </span>
-              </el-dialog>
             </div>
           </div>
         </div>
@@ -284,12 +272,11 @@ export default {
           {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
         ]
       },
-      uploadURL:'http://localhost:5050/upload/uploadPic',
+      uploadURL:this.$global.URL+'/upload/uploadPic',
       //图片上传组件的header请求头
       headerObj:{
         token:localStorage.getItem('token'),
       },
-      centerDialogVisible:false,//确认提交时的对话框
     }
   },
   methods: {
@@ -340,7 +327,7 @@ export default {
       this.active++;
     },
     outMaxImage() {
-      return this.$message.error('只允许上传一张图片');
+      return this.$message.error('主页图片只能上传一张');
     },
     picsNext() {
       let pics=this.goodsForm.pics;
@@ -387,8 +374,6 @@ export default {
       this.goodsForm.pics.detailsPic=fileList;
     },
     submitAll(){
-      this.centerDialogVisible=false;
-
       let loadingInstance=this.$loading({
         lock: true,
         text: '添加商品中...',
@@ -396,20 +381,36 @@ export default {
         background: 'rgba(0, 0, 0, 0.5)'
       });
       (async ()=>{
-        const {data:res}=await this.axios.post('/goods/addGoods', this.goodsForm)
-        if (res.code === 200) {
-          this.$notify({
-            title: 'ok',
-            message:'商品已添加至仓库',
-            type: 'success'
-          });
-          await this.$router.push('/goods/list')
-        }else{
-          this.$message.error( '添加失败，请重试或联系管理员！');
+        try {
+          await this.$confirm('请确认是否继续操作，该操作会将商品提交到仓库', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+          const {data:res}=await this.axios.post('/goods/addGoods', this.goodsForm);
+          if (res.code === 200) {
+            this.$notify({
+              title: 'ok',
+              message:'商品已添加至仓库',
+              type: 'success'
+            });
+            await this.$router.push('/goods/list');
+            await this.$nextTick(() => { // 以服务的方式调用的 Loading
+              loadingInstance.close();
+            });
+          }else{
+            this.$message.error( '添加失败，请重试或联系管理员！');
+            this.$nextTick(() => { // 以服务的方式调用的 Loading
+              loadingInstance.close();
+            });
+          }
         }
-        this.$nextTick(() => { // 以服务的方式调用的 Loading
-          loadingInstance.close();
-        });
+        catch (e){
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          });
+        }
       })()
     },
   },
@@ -433,7 +434,7 @@ export default {
     box-sizing: border-box;
     background-color: #fff;
     height: 4rem;
-    max-width: 80rem;
+    max-width: 90rem;
 
     .el-step {
       width: 10rem;
@@ -454,14 +455,17 @@ export default {
     .spec {
       display: flex;
       min-width: 45rem;
-      justify-content: start;
-      align-items: center;
-      height: 8rem;
-
+      flex-direction: column;
+      align-items: start;
+      height: 15rem;
+      span{
+        display: inline-block;
+        width: 5rem;
+        margin-right: 1rem;
+      }
       div {
         display: flex;
         align-items: center;
-        margin: 0 1rem;
 
         .el-input {
           width: 10rem;
@@ -489,7 +493,7 @@ export default {
   }
 
   .specBtn {
-    margin-top: 2rem;
+    margin-top: 5rem;
     margin-left: 3rem;
   }
 

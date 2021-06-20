@@ -119,9 +119,11 @@ export default {
 <style lang="scss">
 .info{
   .input-item{
-    width: 26rem;
+    -webkit-appearance: none;
+    width: 80%;
   }
   .msg{
+    display: block;
     padding-left: 1rem;
     color: #666666;
   }

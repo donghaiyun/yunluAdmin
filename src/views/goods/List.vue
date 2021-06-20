@@ -31,7 +31,7 @@
               label="商品"
               width="180">
             <template slot-scope="scope">
-                <img :src="scope.row.smPic" style="width: 6rem;height: 6rem" alt="">
+                <img :src="scope.row.smPic" style="width: 6rem;height: 6rem;object-fit: cover" alt="">
                 <p class="name">{{scope.row.name}}</p>
             </template>
           </el-table-column>
@@ -64,7 +64,7 @@
           </el-table-column>
           <el-table-column
               prop="createTime"
-              label="创建时间"
+              label="更新时间"
               width="120"
               sortable>
           </el-table-column>
@@ -103,7 +103,7 @@
                      @click="updateStatus(2)">
             上架商品
           </el-button>
-          <el-button type="danger" plain v-show="status==='1'">
+          <el-button type="danger" @click="deleteGoods" plain v-show="status==='1'">
             删除
           </el-button>
           <el-button type="primary" plain>修改分类</el-button>
@@ -121,7 +121,7 @@ export default {
       multipleSelection: [],
       status:'2',
       tableData:[],
-      picUrl:'http://localhost:5050/images/',
+      picUrl:this.$global.URL+'/images/',
     }
   },
   methods:{
@@ -136,7 +136,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(val);
     },
     getGoodsList(sid){
       /*获取商品列表数据*/
@@ -186,22 +185,63 @@ export default {
         if(res.code===200){
           //查询出修改的商品位置并移出当前商品列表
           let index=this.tableData.findIndex((item)=>{
-            return item.product_id=product_id;
+            return item.id===product_id;
           })
           this.tableData.splice(index,1);
           const msg=toStatus===1?'商品已下架至仓库！':'商品已设置为出售状态！';
           this.$notify({
             title: 'ok',
             message:msg,
-            type: 'success'
+            type: 'success',
+            duration:2000
           });
         }
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
           loadingInstance.close();
         });
       })()
+    },
+    deleteGoods(){
+      if(this.multipleSelection.length>1){
+        return this.$message.error('目前每次只能操作一件商品！');
+      }
+      let product_id=this.multipleSelection[0].id;
+      (async ()=>{
+        try {
+          await this.$confirm('此操作将永久该商品, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+          const {data:res}=await this.axios.put('/goods/deleteGoods',{product_id});
+          if(res.code===200){
+            //查询出商品下标并移出列表
+            let index=this.tableData.findIndex((item)=>{
+              return item.id===product_id;
+            })
+            this.tableData.splice(index,1);
+            this.$notify({
+              title: 'ok',
+              message:'删除商品成功',
+              type: 'success',
+              duration:2000
+            });
+          }else{
+            this.$message({
+              type: 'error',
+              message: '删除失败，请重试或联系管理员处理!',
+              duration:2000
+            });
+          }
+        }
+        catch (e){
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        }
+      })()
     }
-
   },
   mounted() {
     this.getGoodsList(2);

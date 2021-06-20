@@ -40,7 +40,9 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  MenuItemGroup,
+  MenuItem
 } from 'element-ui';
 Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.use(Dialog);
@@ -77,7 +79,8 @@ Vue.use(Icon);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Upload);
-
+Vue.use(MenuItemGroup);
+Vue.use(MenuItem)
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

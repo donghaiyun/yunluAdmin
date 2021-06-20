@@ -93,9 +93,6 @@ html body a:focus {
   .closeAside nav {
     width: 6rem;
   }
-  .closeAside nav .el-icon-caret-bottom, .closeAside nav cite, .closeAside nav .nav-child {
-    display: none;
-  }
   .closeAside main {
     left: 6rem;
   }

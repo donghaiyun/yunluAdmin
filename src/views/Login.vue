@@ -121,7 +121,8 @@ export default {
           this.$notify({
             title: 'ok',
             message: '登录成功',
-            type: 'success'
+            type: 'success',
+            duration:2000
           });
           await this.$router.push(this.$route.query.redirect|| '/');
         } else if (res.code === 401) {
@@ -132,7 +133,7 @@ export default {
     },
     onRegister() {
       /*注册函数*/
-      let {phone,password,relPassword,username}=this.userRegister;
+      let {phone,password,relPassword,username,nickName}=this.userRegister;
       let errMsg = '';
       if (password !== relPassword) errMsg = '两次输入密码不一致！';
       if (!password) errMsg = '密码不允许为空！';
@@ -142,15 +143,15 @@ export default {
       if (errMsg !== ''){
         return this.$message.error(errMsg);
       }
-
       this.fullscreenLoading = true;//开启loading遮罩
       (async ()=>{
-        const {data:res}=await this.axios.post('/user/register', {phone, password, username})
+        const {data:res}=await this.axios.post('/user/register', {phone, password, username,relPassword})
         if (res.code === 200) {
           this.$notify({
             title: 'ok',
             message: '注册成功',
-            type: 'success'
+            type: 'success',
+            duration:2000
           });
           this.isLogin=true;
         } else if (res.code === 401) {

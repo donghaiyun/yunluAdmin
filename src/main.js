@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import axios from "./axios";
+import axios from "./untils/axios";
+import global from './untils/global';
 import moment from "moment";
 import './plugins/element'
 import 'element-ui/lib/theme-chalk/display.css';
@@ -12,6 +13,7 @@ import MyHeader from "@/components/MyHeader";
 import MyMain from "@/components/MyMain";
 Vue.use(axios); //使用二次封装的axios
 
+Vue.prototype.$global=global; //全局变量方法
 Vue.prototype.moment=moment;
 //注册页头导航和main为全局组件
 Vue.component('MyNav',MyNav);

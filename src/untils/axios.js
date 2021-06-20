@@ -1,7 +1,7 @@
 import axios from "axios";
 import qs from "qs";
-import store from './store';
-
+import store from '../store';
+import {MessageBox} from 'element-ui';
 const Axios=axios.create({
   baseURL:"/api",
   withCredentials:true
@@ -35,10 +35,19 @@ Axios.interceptors.response.use(
       sessionStorage.removeItem("token");
       store.commit("setIsLogin",false);
       store.commit("setUsername","");
+
+        MessageBox.alert('登录信息已过期，请重新登录！', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+                window.location.href='/#/login';
+            }
+        });
+
     }else if(res.data.code===-1){
       store.commit("setIsLogin",false);
       store.commit("setUsername","");
       alert(res.data.msg+" 请先登录 !");
+      window.location.href='/#/login';
     }else if(res.data.token){
       store.commit("setUsername",res.data.result.username);
       store.commit("setIsLogin",true);
