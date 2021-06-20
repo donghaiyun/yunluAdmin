@@ -31,7 +31,7 @@
               label="商品"
               width="180">
             <template slot-scope="scope">
-                <img :src="scope.row.smPic" style="width: 6rem;height: 6rem;object-fit: cover" alt="">
+                <img :src="smPic(scope.row.pics)" style="width: 6rem;height: 6rem;object-fit: cover" alt="">
                 <p class="name">{{scope.row.name}}</p>
             </template>
           </el-table-column>
@@ -40,14 +40,14 @@
               width="150">
             <template slot-scope="scope">
               <el-popover placement="top-start" title="" trigger="hover">
-                <p v-for="(item,index) of scope.row.sku" :key="index">
+                <p v-for="(item,index) of scope.row.skus" :key="index">
                   <span class="el-popover-spec">{{item.spec}}：</span>
                   <span class="el-popover-price">
                     ￥{{Number(item.price).toFixed(2)}}
                   </span>
                 </p>
                 <p class="price" slot="reference" style="width: 6rem">
-                  ￥{{Number(scope.row.sku[0].price).toFixed(2)}}
+                  ￥{{Number(scope.row.skus[0].price).toFixed(2)}}
                 </p>
               </el-popover>
             </template>
@@ -64,12 +64,12 @@
           </el-table-column>
           <el-table-column
               prop="createTime"
-              label="更新时间"
+              label="创建时间"
               width="120"
               sortable>
           </el-table-column>
           <el-table-column
-              prop="serialNo"
+              prop="id"
               label="商品编号"
               width="150">
           </el-table-column>
@@ -121,10 +121,18 @@ export default {
       multipleSelection: [],
       status:'2',
       tableData:[],
-      picUrl:this.$global.URL+'/images/',
+      picUrl:this.$global.URL+'/image/',
     }
   },
   methods:{
+    smPic(arr){
+      let smPicArr= arr.filter(item=>{
+        if(item.type==='smPic'){
+          return item;
+        }
+      })
+      return this.picUrl+smPicArr[0].saveName;
+    },
     selectState(event){
       /*选择展示商品的状态*/
       if(event.target.nodeName.toLowerCase()==='li'){
@@ -140,39 +148,26 @@ export default {
     getGoodsList(sid){
       /*获取商品列表数据*/
       (async ()=>{
-        const {data:res}=await this.axios.get('/goods/getGoodsList',{
+        const {data}=await this.axios.get('/goods/getGoodsList',{
           params:{sid}
         })
-        if(res.code===200){
-          let results=res.result;
-          //处理服务器返回的数据
-          results.forEach((item)=>{
-            item.smPic=this.picUrl+item.smPic;
-            let specs=item.spec.split(',');
-            let prices=item.price.split(',');
-            let sku=[];
-            specs.forEach((item,index)=>{
-              sku.push({
-                spec:item,
-                price:Number(prices[index])
-              })
-            })
-            item.sku=sku;
-            item.serialNo=item.id;
-            item.createTime=this.moment(item.createTime).format('YYYY-MM-DD');
-            delete item.spec;
-            delete item.price;
+        if(data.code===200){
+          let result=data.result;
+          result.forEach(item=>{
+            item.createTime=this.moment(item.createTime).format('YYYY-MM-DD HH:mm');
+            item.stock=item.skus[0].stock;
+            item.totalsale=item.skus[0].totalsale
           })
-          this.tableData=results;
+          this.tableData=result;
         }else{
         }
       })()
     },
-    updateStatus(toStatus){
+    updateStatus(status){
       if(this.multipleSelection.length>1){
         return this.$message.error('目前每次只能操作一件商品！');
       }
-      let product_id=this.multipleSelection[0].id;
+      let id=this.multipleSelection[0].id;
 
       let loadingInstance=this.$loading({ //loading
         lock: true,
@@ -181,14 +176,14 @@ export default {
         background: 'rgba(0, 0, 0, 0.5)'
       });
       (async ()=>{
-        const {data:res}=await this.axios.put('/goods/updateStatus',{product_id,toStatus});
+        const {data:res}=await this.axios.post('/goods/updateStatus',{id,status});
         if(res.code===200){
           //查询出修改的商品位置并移出当前商品列表
           let index=this.tableData.findIndex((item)=>{
-            return item.id===product_id;
+            return item.id===id;
           })
           this.tableData.splice(index,1);
-          const msg=toStatus===1?'商品已下架至仓库！':'商品已设置为出售状态！';
+          const msg=status===1?'商品已下架至仓库！':'商品已设置为出售状态！';
           this.$notify({
             title: 'ok',
             message:msg,
@@ -226,12 +221,6 @@ export default {
               type: 'success',
               duration:2000
             });
-          }else{
-            this.$message({
-              type: 'error',
-              message: '删除失败，请重试或联系管理员处理!',
-              duration:2000
-            });
           }
         }
         catch (e){
@@ -253,7 +242,7 @@ export default {
     }
   },
   filters: {
-  }
+  },
 }
 </script>
 

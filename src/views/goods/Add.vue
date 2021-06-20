@@ -24,8 +24,8 @@
             <el-input style="width: 60%" v-model="goodsForm.title"
                       placeholder="请输入商品标题"></el-input>
           </el-form-item>
-          <el-form-item label="商品分类" prop="category_id">
-            <el-select v-model="goodsForm.category_id" placeholder="请选择商品分类">
+          <el-form-item label="商品分类" prop="categoryId">
+            <el-select v-model="goodsForm.categoryId" placeholder="请选择商品分类">
               <el-option label="水果" value="10"></el-option>
               <el-option label="药材" value="20"></el-option>
               <el-option label="特色食品" value="30"></el-option>
@@ -96,9 +96,9 @@
                   :action="uploadURL"
                   :headers="headerObj"
                   list-type="picture-card"
-                  :file-list="goodsForm.pics.smPic"
+                  :file-list="showImageCardList('smPic')"
                   :auto-upload="true"
-                  :on-remove="handleRemoveSm"
+                  :on-remove="handleRemove"
                   :on-exceed="outMaxImage"
                   :on-success="handleSuccessSm"
                   :limit="1">
@@ -113,9 +113,9 @@
                   :action="uploadURL"
                   :headers="headerObj"
                   list-type="picture-card"
-                  :file-list="goodsForm.pics.lgPic"
+                  :file-list="showImageCardList('lgPic')"
                   :auto-upload="true"
-                  :on-remove="handleRemoveLg"
+                  :on-remove="handleRemove"
                   :on-success="handleSuccessLg"
               >
                 <i class="el-icon-plus"></i>
@@ -129,9 +129,9 @@
                   :action="uploadURL"
                   :headers="headerObj"
                   list-type="picture-card"
-                  :file-list="goodsForm.pics.detailsPic"
                   :auto-upload="true"
-                  :on-remove="handleRemoveDetail"
+                  :file-list="showImageCardList('detailsPic')"
+                  :on-remove="handleRemove"
                   :on-success="handleSuccessDetails"
               >
                 <i class="el-icon-plus"></i>
@@ -160,7 +160,7 @@
                 </li>
                 <li>
                   <p>商品分类</p>
-                  <div>{{ goodsForm.category_id|category_id }}</div>
+                  <div>{{ goodsForm.categoryId|categoryId }}</div>
                 </li>
                 <li>
                   <p>保障</p>
@@ -182,29 +182,29 @@
                   <p>规格价格</p>
                   <ul>
                     <li v-for="(item,index) of goodsForm.skus" :key="index">
-                      {{ item.spec + '：' }}{{ item.price +'元'}}
+                      {{ item.spec + '：' }}{{ item.price + '元' }}
                     </li>
                   </ul>
                 </li>
                 <li>
                   <p>主图片</p>
                   <div>
-                    {{ goodsForm.pics.smPic[0].originalname }}
+                    {{ showImageCardList('smPic')[0].oldName }}
                   </div>
                 </li>
                 <li>
                   <p>轮播图片</p>
                   <ul>
-                    <li v-for="(item,index) of goodsForm.pics.lgPic" :key="index">
-                      {{ item.originalname }}
+                    <li v-for="(item,index) of showImageCardList('lgPic')" :key="index">
+                      {{ item.oldName }}
                     </li>
                   </ul>
                 </li>
                 <li>
                   <p>详情图片</p>
                   <ul>
-                    <li v-for="(item,index) of goodsForm.pics.detailsPic" :key="index">
-                      {{ item.originalname }}
+                    <li v-for="(item,index) of showImageCardList('detailsPic')" :key="index">
+                      {{ item.oldName }}
                     </li>
                   </ul>
                 </li>
@@ -229,25 +229,25 @@ export default {
       active: 0, //步骤页
       fileListL: [],
       disabled: false,
-      imageUrl: '', //主图片
       fileList: [],//图片列表
       goodsForm: { //商品基本信息对象
         name: '',  //商品名称
         title: '',  //商品标题
-        category_id: '', //商品分类
+        categoryId: '', //商品分类
         service: [], //服务
         isActual: '',//是否现货
         area: '', //生产地区
         skus: [{ //商品规格列表
           spec: '',
           price: '',
-          stock:''
+          stock: ''
         }],
-        pics: { //图片对象
-          smPic: [],
-          lgPic: [],
-          detailsPic: []
-        },
+        pics: []
+        // pics: { //图片对象
+        //   smPic: [],
+        //   lgPic: [],
+        //   detailsPic: []
+        // },
       },
       rules: {
         name: [
@@ -258,7 +258,7 @@ export default {
           {required: true, message: '请输入商品标题', trigger: 'blur'},
           {min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur'}
         ],
-        category_id: [
+        categoryId: [
           {required: true, message: '请选择商品分类', trigger: 'change'}
         ],
         service: [
@@ -272,10 +272,11 @@ export default {
           {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
         ]
       },
-      uploadURL:this.$global.URL+'/upload/uploadPic',
+      uploadURL: this.$global.URL + '/upload/uploadImage',
+      imageUrl: this.$global.URL + '/image/',
       //图片上传组件的header请求头
-      headerObj:{
-        token:localStorage.getItem('token'),
+      headerObj: {
+        Authorization: 'Bearer ' + localStorage.getItem("token")
       },
     }
   },
@@ -307,7 +308,7 @@ export default {
       this.goodsForm.skus.push({
         spec: '',
         price: '',
-        stock:'',
+        stock: '',
         key: Date.now()
       })
     },
@@ -329,83 +330,93 @@ export default {
     outMaxImage() {
       return this.$message.error('主页图片只能上传一张');
     },
+
     picsNext() {
-      let pics=this.goodsForm.pics;
-      if(pics.smPic.length===0 || pics.lgPic.length===0 ||pics.detailsPic.length===0){
-        return this.$message.error('请选择图片！');
-      }else{
-        this.active++;
+      /*上传图片界面下一步验证
+      * 检验三种图片至少有一张*/
+      let smPicLen = this.showImageCardList('smPic').length;
+      let lgPicLen = this.showImageCardList('lgPic').length;
+      let detailsPicLen = this.showImageCardList('detailsPic').length;
+      if (smPicLen && lgPicLen && detailsPicLen) {
+        this.active++;//验证通过，步骤+1
+      } else {
+        return this.$message.error('三种类别图片请至少上传一张');
       }
     },
-    handleSuccessSm(response){
+    saveImageInfo(response, type) {
+      if (response.code === 400) {
+        return this.$message.error('上传的文件必须是图片格式！')
+      }
+      const {saveName, oldName} = response.result;
+      this.goodsForm.pics.push({
+        type: type,
+        saveName,
+        oldName,
+        url: this.imageUrl + saveName
+      })
+    },
+    handleSuccessSm(response) {
       /*监听主页图片上传成功的事件*/
-      this.goodsForm.pics.smPic.push({
-        changeName:response.changeName,
-        originalname:response.originalname,
-        url:response.path
-      })
+      this.saveImageInfo(response, 'smPic');
     },
-    handleSuccessLg(response){
+    handleSuccessLg(response) {
       /*监听顶部轮播图片上传成功的事件*/
-      this.goodsForm.pics.lgPic.push({
-        changeName:response.changeName,
-        originalname:response.originalname,
-        url:response.path
-      })
+      this.saveImageInfo(response, 'lgPic');
     },
-    handleSuccessDetails(response){
+    handleSuccessDetails(response) {
       /*监听详情页图片上传成功的事件*/
-      this.goodsForm.pics.detailsPic.push({
-        changeName:response.changeName,
-        originalname:response.originalname,
-        url:response.path
+      this.saveImageInfo(response, 'detailsPic');
+    },
+    handleRemove(file) {
+      /*处理移除主页图片的操作*/
+      this.goodsForm.pics=this.goodsForm.pics.filter(item => {
+        if (item.saveName !== file.saveName) {
+          return item
+        }
       })
     },
-    handleRemoveSm(){
-      /*处理移除主页图片的操作*/
-      this.goodsForm.pics.smPic=[];
+    showImageCardList(type) {
+      /*筛选上传时展示的图片列表*/
+      return this.goodsForm.pics.filter(item => {
+        if (item.type === type) {
+          return item;
+        }
+      })
     },
-    handleRemoveLg(file,fileList){
-      /*处理移除轮播图片的操作*/
-      this.goodsForm.pics.lgPic=fileList;
-    },
-    handleRemoveDetail(file,fileList){
-      /*处理移除详情页图片的操作*/
-      this.goodsForm.pics.detailsPic=fileList;
-    },
-    submitAll(){
-      let loadingInstance=this.$loading({
+    submitAll() {
+      let loadingInstance = this.$loading({
         lock: true,
         text: '添加商品中...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.5)'
       });
-      (async ()=>{
+      const data=this.goodsForm;
+      data.service=data.service.join(',');
+      (async () => {
         try {
           await this.$confirm('请确认是否继续操作，该操作会将商品提交到仓库', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           })
-          const {data:res}=await this.axios.post('/goods/addGoods', this.goodsForm);
+          const {data: res} = await this.axios.post('/goods/addGoods', this.goodsForm);
           if (res.code === 200) {
             this.$notify({
               title: 'ok',
-              message:'商品已添加至仓库',
+              message: '商品已添加至仓库',
               type: 'success'
             });
             await this.$router.push('/goods/list');
             await this.$nextTick(() => { // 以服务的方式调用的 Loading
               loadingInstance.close();
             });
-          }else{
-            this.$message.error( '添加失败，请重试或联系管理员！');
+          } else {
+            this.$message.error('添加失败，请重试或联系管理员！');
             this.$nextTick(() => { // 以服务的方式调用的 Loading
               loadingInstance.close();
             });
           }
-        }
-        catch (e){
+        } catch (e) {
           this.$message({
             type: 'info',
             message: '已取消操作'
@@ -415,12 +426,12 @@ export default {
     },
   },
   filters: {
-    category_id(value) {
+    categoryId(value) {
       if (!value) return ''
-      value=value==='10'?'水果':value==='20'?'药材':'特色食品';
+      value = value === '10' ? '水果' : value === '20' ? '药材' : '特色食品';
       return value;
     }
-  }
+  },
 }
 </script>
 
@@ -458,11 +469,13 @@ export default {
       flex-direction: column;
       align-items: start;
       height: 15rem;
-      span{
+
+      span {
         display: inline-block;
         width: 5rem;
         margin-right: 1rem;
       }
+
       div {
         display: flex;
         align-items: center;
@@ -477,15 +490,18 @@ export default {
         color: #F56C6C;
         margin-right: 4px;
       }
-      .price{
+
+      .price {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
       }
-      .spec-item.price>div{
+
+      .spec-item.price > div {
         display: flex;
         justify-content: center;
       }
+
       .el-button {
         margin-left: 1rem;
       }

@@ -57,7 +57,7 @@ export default {
           {required: true, message: '请输入昵称', trigger: 'blur'}
         ],
         email: [
-          { type: 'email', required: true, message: '邮箱不正确', trigger: 'change' }
+          { type: 'email', message: '邮箱不正确', trigger: 'change' }
         ],
       }
     }
@@ -101,12 +101,12 @@ export default {
     },
     getUserinfo(){
       (async ()=>{
-        const {data:res}=await this.axios.get('/user/getUserinfo');
-        let result=res.result;
-        result.gender=Number(result.gender)===1?'男':'女';
-        result.phone=result.phone.slice(0,4)+' * * * '+result.phone.slice(7);
-        for(let key in res.result){
-          this.userForm[key]=res.result[key];
+        const {data}=await this.axios.get('/user/getUserinfo');
+        const user=data.user;
+        user.gender=Number(user.gender)===1?'男':'女';
+        user.phone=user.phone.slice(0,4)+' * * * '+user.phone.slice(7);
+        for(let key of Object.keys(user)){
+          this.userForm[key]=user[key];
         }
       })()
     }

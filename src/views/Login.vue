@@ -116,7 +116,7 @@ export default {
       }
       this.fullscreenLoading = true; //开启loading遮罩
       (async ()=>{
-        const {data:res}=await this.axios.post('/user/login', {phone, password})
+        const {data:res}=await this.axios.post('/auth/login', {phone, password})
         if (res.code === 200) {
           this.$notify({
             title: 'ok',
