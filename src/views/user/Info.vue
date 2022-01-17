@@ -43,8 +43,8 @@
 <script>
 export default {
   name: "Info",
-  data(){
-    return{
+  data() {
+    return {
       userForm: {
         name: '超级管理员',
         username: '',
@@ -57,41 +57,38 @@ export default {
           {required: true, message: '请输入昵称', trigger: 'blur'}
         ],
         email: [
-          { type: 'email', message: '邮箱不正确', trigger: 'change' }
+          {type: 'email', message: '邮箱不正确', trigger: 'change'}
         ],
       }
     }
   },
-  methods:{
+  methods: {
     submitForm(infoForm) {
-      this.$refs[infoForm].validate((valid) => {
+      this.$refs[infoForm].validate(async(valid) => {
         if (valid) {
-          let loadingInstance=this.$loading({
+          let loadingInstance = this.$loading({
             lock: true,
             text: '修改中...',
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.5)'
           });
-          let {username,gender,email}=this.userForm;
-          gender=gender==='男'?1:2;
-          (async ()=>{
-            const {data:res}=await this.axios.post('/user/updateUserinfo',{username,gender,email});
-            if(res.code===200){
-              this.$store.commit('setUsername',username);//修改vuex中username
-              this.$notify({
-                title: 'ok',
-                message:'个人信息修改成功',
-                type: 'success'
-              });
-            }else{
-              this.$message.error('用户信息修改失败，请重试或联系管理员！')
-            }
-            this.$nextTick(() => { // 以服务的方式调用的 Loading
-              loadingInstance.close();
+          let {username, gender, email} = this.userForm;
+          gender = gender === '男' ? 1 : 2;
+          const {data: res} = await this.axios.post('/user/updateUserinfo', {username, gender, email});
+          if (res.code === 200) {
+            this.$store.commit('setUsername', username);//修改vuex中username
+            this.$notify({
+              title: 'ok',
+              message: '个人信息修改成功',
+              type: 'success'
             });
-          })()
+          } else {
+            this.$message.error('用户信息修改失败，请重试或联系管理员！')
+          }
+          this.$nextTick(() => { // 以服务的方式调用的 Loading
+            loadingInstance.close();
+          });
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
@@ -99,16 +96,14 @@ export default {
     resetForm(infoForm) {
       this.$refs[infoForm].resetFields();
     },
-    getUserinfo(){
-      (async ()=>{
-        const {data}=await this.axios.get('/user/getUserinfo');
-        const user=data.user;
-        user.gender=Number(user.gender)===1?'男':'女';
-        user.phone=user.phone.slice(0,4)+' * * * '+user.phone.slice(7);
-        for(let key of Object.keys(user)){
-          this.userForm[key]=user[key];
-        }
-      })()
+    async getUserinfo() {
+      const {data} = await this.axios.get('/user/getUserinfo');
+      const user = data.user;
+      user.gender = Number(user.gender) === 1 ? '男' : '女';
+      user.phone = user.phone.slice(0, 4) + ' * * * ' + user.phone.slice(7);
+      for (let key of Object.keys(user)) {
+        this.userForm[key] = user[key];
+      }
     }
   },
   mounted() {
@@ -117,12 +112,13 @@ export default {
 }
 </script>
 <style lang="scss">
-.info{
-  .input-item{
+.info {
+  .input-item {
     -webkit-appearance: none;
     width: 80%;
   }
-  .msg{
+
+  .msg {
     display: block;
     padding-left: 1rem;
     color: #666666;

@@ -1,4 +1,5 @@
+const config=require('../../vue.config')
+const URL=config.devServer.proxy["/api"].target
 export default {
-    // URL:'https://dhy.cool:50',
-    URL:'http://localhost:3000'
+    URL
 }

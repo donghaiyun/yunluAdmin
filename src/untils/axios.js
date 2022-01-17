@@ -42,13 +42,14 @@ Axios.interceptors.response.use(
     },
     error => {
         const status=error.response.status;
+        const msg = error.response.data.msg
         switch (status) {
             case 401:
                 localStorage.removeItem("token");
                 sessionStorage.removeItem("token");
                 store.commit("setIsLogin", false);
                 store.commit("setUsername", "");
-                MessageBox.alert('登录信息已过期，请重新登录！', '提示', {
+                MessageBox.alert(msg, '提示', {
                     confirmButtonText: '确定',
                     callback: () => {
                         router.push('/login').then(() => {})
