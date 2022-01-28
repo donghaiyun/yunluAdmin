@@ -166,12 +166,12 @@
 
 <script>
 export default {
-  name: "Index",
-  data(){
+  name: 'Index',
+  data () {
     return {
-      innerWidth:window.innerWidth,
+      innerWidth: window.innerWidth
     }
-  },
+  }
 }
 </script>
 

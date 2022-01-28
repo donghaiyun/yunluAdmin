@@ -3,15 +3,15 @@ module.exports = {
     '@vue/cli-plugin-babel/preset',
     ['@vue/babel-preset-jsx',
       {
-        'injectH': false
+        injectH: false
       }]
   ],
-  "plugins": [
+  plugins: [
     [
-      "component",
+      'component',
       {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-chalk"
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk'
       }
     ]
   ]

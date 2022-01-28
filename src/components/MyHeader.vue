@@ -41,30 +41,30 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from 'vuex'; //导入vuex
+import { mapMutations, mapState } from 'vuex' // 导入vuex
 export default {
-  name: "MyHeader",
-  data() {
+  name: 'MyHeader',
+  data () {
     return {}
   },
   methods: {
-    ...mapMutations(['setOpenAside']),//解构vuex
-    logOut(){
-      /*退出登录函数*/
-      this.$store.commit('setIsLogin', false);
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      localStorage.removeItem("user");
-      sessionStorage.removeItem("user");
-      this.$router.push('/login');
+    ...mapMutations(['setOpenAside']), // 解构vuex
+    logOut () {
+      /* 退出登录函数 */
+      this.$store.commit('setIsLogin', false)
+      localStorage.removeItem('token')
+      sessionStorage.removeItem('token')
+      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
+      this.$router.push('/login')
     },
-    loadListener() {
-      document.documentElement.webkitRequestFullscreen();
+    loadListener () {
+      document.documentElement.webkitRequestFullscreen()
     }
   },
   computed: {
-    ...mapState(["openAside","username"]),//解构vuex
-  },
+    ...mapState(['openAside', 'username'])// 解构vuex
+  }
 }
 </script>
 

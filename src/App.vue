@@ -12,19 +12,19 @@
 <script>
 
 export default {
-  name: "Index",
-  data(){
+  name: 'Index',
+  data () {
     return {
-      openMask:false
+      openMask: false
     }
   },
-  computed:{
-    openAside() {
-      return this.$store.state.openAside;
+  computed: {
+    openAside () {
+      return this.$store.state.openAside
     }
   },
-  created() {
-    if(window.innerWidth<992) this.$store.commit('setOpenAside',false);//小屏时默认关闭遮罩
+  created () {
+    if (window.innerWidth < 992) this.$store.commit('setOpenAside', false)// 小屏时默认关闭遮罩
   }
 }
 </script>

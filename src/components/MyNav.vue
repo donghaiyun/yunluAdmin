@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'; //导入vuex
-import router from '../router';
+import { mapState } from 'vuex' // 导入vuex
+import router from '../router'
 
 export default {
-  name: "MyNav",
-  data() {
+  name: 'MyNav',
+  data () {
     return {
       routers: [],
       navActive: {},
@@ -52,89 +52,89 @@ export default {
     }
   },
   methods: {
-    selectNav() {
+    selectNav () {
       if (window.innerWidth < 992) {
-        //小屏时，路由跳转后关闭导航栏
-        this.$store.commit('setOpenAside', false);
+        // 小屏时，路由跳转后关闭导航栏
+        this.$store.commit('setOpenAside', false)
       }
     },
-    setCurrentNav(index, childNodes) {
-      /*记录鼠标移动导航是的状态*/
-      this.currentNav = index;
-      this.currentNavStyle = this.getNavStyle(index, childNodes);
+    setCurrentNav (index, childNodes) {
+      /* 记录鼠标移动导航是的状态 */
+      this.currentNav = index
+      this.currentNavStyle = this.getNavStyle(index, childNodes)
     },
-    getNavStyle(index, childNodes) {
-      /*根据导航的index移动左边划线*/
-      let top = 0; //设置下划线的top距离
-      let height = 55;//设置左边划线的默认高度
-      let opacity = 1;
+    getNavStyle (index, childNodes) {
+      /* 根据导航的index移动左边划线 */
+      let top = 0 // 设置下划线的top距离
+      const height = 55// 设置左边划线的默认高度
+      const opacity = 1
       if (index > 0) {
-        //计算上面导航的总top距离，设置左划线的下移距离
+        // 计算上面导航的总top距离，设置左划线的下移距离
         for (let i = 0; i < index; i++) {
-          top += childNodes[i].clientHeight;
+          top += childNodes[i].clientHeight
         }
       }
-      return {top, height, opacity};
+      return { top, height, opacity }
     },
-    hiddenNavBar() {
-      /*设置鼠标移出ul时隐藏导航划线*/
-      this.currentNavStyle.height = 0;/**/
-      this.currentNavStyle.top += 28;
-      this.currentNavStyle.opacity = 0.5;
+    hiddenNavBar () {
+      /* 设置鼠标移出ul时隐藏导航划线 */
+      this.currentNavStyle.height = 0/**/
+      this.currentNavStyle.top += 28
+      this.currentNavStyle.opacity = 0.5
     },
-    showNavs() {
-      /*展示导航栏函数*/
-      const {routes} = router.options;
+    showNavs () {
+      /* 展示导航栏函数 */
+      const { routes } = router.options
       this.routers = routes.filter((item, index) => {
         if (item.children) {
           item.children.forEach(childItem => {
-            childItem.path = item.path + '/' + childItem.path;
+            childItem.path = item.path + '/' + childItem.path
           })
         }
         if (!item.hide && index !== 0) {
-          return item;
+          return item
         }
-      });
+      })
     },
-    bindNavbarEvent() {
-      const menubar = document.querySelector('.el-menu');
-      menubar.addEventListener('mouseleave', this.hiddenNavBar);
+    bindNavbarEvent () {
+      const menubar = document.querySelector('.el-menu')
+      menubar.addEventListener('mouseleave', this.hiddenNavBar)
       const submenu = menubar.childNodes
       submenu.forEach((item, index) => {
         item.addEventListener('mouseenter', () => {
-          this.setCurrentNav(index, submenu);
+          this.setCurrentNav(index, submenu)
         })
       })
       menubar.addEventListener('click', () => {
         if (!this.openAside && window.innerWidth >= 992) {
-          this.$store.commit('setOpenAside', true);
+          this.$store.commit('setOpenAside', true)
         }
       })
     }
   },
   computed: {
-    ...mapState(["openAside", "username"]),//解构vuex
-    navBarStyle() {
-      /*导航栏左侧划线style对象*/
-      let style = this.currentNavStyle;
-      return {top: `${style.top}px`, height: `${style.height}px`, opacity: `${style.opacity}`};
+    ...mapState(['openAside', 'username']), // 解构vuex
+    navBarStyle () {
+      /* 导航栏左侧划线style对象 */
+      const style = this.currentNavStyle
+      return { top: `${style.top}px`, height: `${style.height}px`, opacity: `${style.opacity}` }
     }
   },
-  mounted() {
+  mounted () {
     this.bindNavbarEvent()
   },
-  created() {
-    this.showNavs();
+  created () {
+    this.showNavs()
   },
   watch: {
-    '$route'(to) {
-      /*监视路由跳转*/
-      this.route = to.path;
+    '$route' (to) {
+      /* 监视路由跳转 */
+      this.route = to.path
       this.bindNavbarEvent()
     },
-    'openAside'() {
-      /*打开菜单时重新绑定事件*/
-      setTimeout(this.bindNavbarEvent, 500);
+    'openAside' () {
+      /* 打开菜单时重新绑定事件 */
+      setTimeout(this.bindNavbarEvent, 500)
     }
   }
 }

@@ -38,49 +38,49 @@
 
 <script>
 export default {
-  name: "test",
-  data() {
+  name: 'test',
+  data () {
     return {
-      text:'',
-      isFinish:'',
+      text: '',
+      isFinish: '',
       isHidden: true,
-      selectTodo:false,
+      selectTodo: false,
       todo: [
       ],
-      newTodo:[]
+      newTodo: []
     }
   },
-  methods:{
-    select(isFinish){
-      this.isFinish=isFinish;
-      this.selectTodo=false;
+  methods: {
+    select (isFinish) {
+      this.isFinish = isFinish
+      this.selectTodo = false
     },
-    add(){
+    add () {
       this.todo.push({
-        name:this.text,
-        isFinish:'未完成'
+        name: this.text,
+        isFinish: '未完成'
       })
-      this.text='';
-      this.newTodo=this.todo;
+      this.text = ''
+      this.newTodo = this.todo
     },
-    setIsHidden(index){
-      this.isHidden=index;
+    setIsHidden (index) {
+      this.isHidden = index
     },
-    setIsFinish(index,isFinish){
-      this.todo[index].isFinish=isFinish;
-      this.isHidden=-1;
-    },
+    setIsFinish (index, isFinish) {
+      this.todo[index].isFinish = isFinish
+      this.isHidden = -1
+    }
   },
-  watch:{
-    isFinish(){
-      this.newTodo=[];
-      this.todo.forEach((item)=>{
-        if(item.isFinish===this.isFinish){
+  watch: {
+    isFinish () {
+      this.newTodo = []
+      this.todo.forEach((item) => {
+        if (item.isFinish === this.isFinish) {
           this.newTodo.push(item)
         }
       })
     }
-  },
+  }
 }
 </script>
 

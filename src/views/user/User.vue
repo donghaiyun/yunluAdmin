@@ -4,12 +4,12 @@
 
 <script>
 export default {
-  name: "User",
-  data(){
+  name: 'User',
+  data () {
     return {
 
     }
-  },
+  }
 }
 </script>
 

@@ -83,15 +83,15 @@
 
 <script>
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
-      fullscreenLoading: false,//加载中
-      isLogin: true,  //切换登录注册窗口
-      rememberMe: false,  //是否记住密码
-      agreement: false,  //是否同意用户协议
+      fullscreenLoading: false, // 加载中
+      isLogin: true, // 切换登录注册窗口
+      rememberMe: false, // 是否记住密码
+      agreement: false, // 是否同意用户协议
       userLogin: {
-        phone: '',  //此变量phone可以是手机号也可以是邮箱
+        phone: '', // 此变量phone可以是手机号也可以是邮箱
         password: ''
       },
       userRegister: {
@@ -103,70 +103,70 @@ export default {
     }
   },
   methods: {
-    async onLogin() {
-      /*登录函数*/
-      const {phone, password} = this.userLogin
+    async onLogin () {
+      /* 登录函数 */
+      const { phone, password } = this.userLogin
 
       if (!phone) {
-        this.$message.error('手机号或邮箱不允许为空！');
-        return;
+        this.$message.error('手机号或邮箱不允许为空！')
+        return
       } else if (!password) {
-        this.$message.error('密码不允许为空！');
-        return;
+        this.$message.error('密码不允许为空！')
+        return
       }
-      this.fullscreenLoading = true; //开启loading遮罩
-      const {data: res} = await this.axios.post('/user/login', {phone, password})
+      this.fullscreenLoading = true // 开启loading遮罩
+      const { data: res } = await this.axios.post('/user/login', { phone, password })
       if (res.code === 200) {
         this.$notify({
           title: 'ok',
           message: '登录成功',
           type: 'success',
           duration: 2000
-        });
-        await this.$router.push(this.$route.query.redirect || '/');
+        })
+        await this.$router.push(this.$route.query.redirect || '/')
       } else if (res.code === 401) {
-        this.$message.error('用户名或密码错误！');
+        this.$message.error('用户名或密码错误！')
       }
-      this.fullscreenLoading = false; //关闭loading遮罩
+      this.fullscreenLoading = false // 关闭loading遮罩
     },
-    async onRegister() {
-      /*注册函数*/
-      let {phone, password, relPassword, username, nickName} = this.userRegister;
-      let errMsg = '';
-      if (password !== relPassword) errMsg = '两次输入密码不一致！';
-      if (!password) errMsg = '密码不允许为空！';
-      if (!/^1[3-9]\d{9}$/.test(phone)) errMsg = '请检查手机号是否正确！';
-      if (!phone) errMsg = '手机号不允许为空！';
-      if (!username) username = phone.slice(0, 3) + '****' + phone.slice(7);//如果昵称为空，设置默认昵称
+    async onRegister () {
+      /* 注册函数 */
+      let { phone, password, relPassword, username, nickName } = this.userRegister
+      let errMsg = ''
+      if (password !== relPassword) errMsg = '两次输入密码不一致！'
+      if (!password) errMsg = '密码不允许为空！'
+      if (!/^1[3-9]\d{9}$/.test(phone)) errMsg = '请检查手机号是否正确！'
+      if (!phone) errMsg = '手机号不允许为空！'
+      if (!username) username = phone.slice(0, 3) + '****' + phone.slice(7)// 如果昵称为空，设置默认昵称
       if (errMsg !== '') {
-        return this.$message.error(errMsg);
+        return this.$message.error(errMsg)
       }
-      this.fullscreenLoading = true;//开启loading遮罩
-      const {data: res} = await this.axios.post('/user/register', {phone, password, username, relPassword})
+      this.fullscreenLoading = true// 开启loading遮罩
+      const { data: res } = await this.axios.post('/user/register', { phone, password, username, relPassword })
       if (res.code === 200) {
         this.$notify({
           title: 'ok',
           message: '注册成功',
           type: 'success',
           duration: 2000
-        });
-        this.isLogin = true;
+        })
+        this.isLogin = true
       } else if (res.code === 401) {
-        this.$message.error('此手机号已存在！');
+        this.$message.error('此手机号已存在！')
       } else {
-        this.$message.error('注册失败！');
+        this.$message.error('注册失败！')
       }
-      this.fullscreenLoading = false; //关闭loading遮罩
-    },
+      this.fullscreenLoading = false // 关闭loading遮罩
+    }
   },
   watch: {
-    //监听user对象内属性，当修改手机号时清空输入框内密码
-    'userLogin.username'() {
-      this.userLogin.password = "";
+    // 监听user对象内属性，当修改手机号时清空输入框内密码
+    'userLogin.username' () {
+      this.userLogin.password = ''
     },
-    'userRegister.phone'() {
-      this.userRegister.password = "";
-      this.userRegister.relPassword = "";
+    'userRegister.phone' () {
+      this.userRegister.password = ''
+      this.userRegister.relPassword = ''
     }
   }
 }

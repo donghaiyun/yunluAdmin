@@ -82,18 +82,18 @@
 
 <script>
 export default {
-  name: "List",
-  data() {
+  name: 'List',
+  data () {
     return {
-      orderStatus:{
-        0:'代发货',
-        1:'已发货',
-        2:'已完成'
+      orderStatus: {
+        0: '代发货',
+        1: '已发货',
+        2: '已完成'
       },
-      selectedOrderStatus:'',
+      selectedOrderStatus: '',
       tableData: [{
         id: '12987122',
-        order_time:'2021-06-02 14:23',
+        order_time: '2021-06-02 14:23',
         name: '好滋好味鸡蛋仔',
         category: '江浙小吃、小吃零食',
         desc: '荷兰优质淡奶，奶香浓而不腻',
@@ -102,7 +102,7 @@ export default {
         customer_name: '张三'
       }, {
         id: '12987123',
-        order_time:'2021-06-02 14:23',
+        order_time: '2021-06-02 14:23',
         name: '好滋好味鸡蛋仔',
         category: '江浙小吃、小吃零食',
         sub_title: '荷兰优质淡奶，奶香浓而不腻',
@@ -111,7 +111,7 @@ export default {
         customer_name: '李四'
       }, {
         id: '12987125',
-        order_time:'2021-06-02 14:23',
+        order_time: '2021-06-02 14:23',
         name: '好滋好味鸡蛋仔',
         category: '江浙小吃、小吃零食',
         sub_title: '荷兰优质淡奶，奶香浓而不腻',
@@ -120,7 +120,7 @@ export default {
         customer_name: '王五'
       }, {
         id: '12987126',
-        order_time:'2021-06-02 14:23',
+        order_time: '2021-06-02 14:23',
         name: '好滋好味鸡蛋仔',
         category: '江浙小吃、小吃零食',
         sub_title: '荷兰优质淡奶，奶香浓而不腻',
@@ -130,13 +130,13 @@ export default {
       }]
     }
   },
-  methods:{
-    selectState(event) {
-      if(event.target.nodeName.toLowerCase()==='li'){
-        this.selectedOrderStatus=event.target.dataset.id;
+  methods: {
+    selectState (event) {
+      if (event.target.nodeName.toLowerCase() === 'li') {
+        this.selectedOrderStatus = event.target.dataset.id
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

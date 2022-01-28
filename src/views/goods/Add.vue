@@ -60,6 +60,7 @@
           <el-form-item
               v-for="(domain, index) in goodsForm.skus"
               prop="skus"
+              :key="index"
           >
             <div class="spec">
               <div class="spec-item"><span>规格{{ index + 1 }}</span>
@@ -272,8 +273,8 @@ export default {
           {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
         ]
       },
-      uploadURL: this.$global.URL + '/upload/uploadImage',
-      imageUrl: this.$global.URL + '/image/',
+      uploadURL: this.$global.URL + '/upload/uploadFile',
+      imageUrl: this.$global.URL + '/images/',
       //图片上传组件的header请求头
       headerObj: {
         Authorization: 'Bearer ' + localStorage.getItem("token")
@@ -298,7 +299,7 @@ export default {
       /*重置表单*/
       this.$refs[formName].resetFields();
     },
-    removeDomain(item) {
+    removeDomain(item){
       let index = this.goodsForm.skus.indexOf(item)
       if (index !== -1) {
         this.goodsForm.skus.splice(index, 1)
@@ -347,7 +348,7 @@ export default {
       if (response.code === 400) {
         return this.$message.error('上传的文件必须是图片格式！')
       }
-      const {saveName, oldName} = response.result;
+      const {saveName, oldName} = response;
       this.goodsForm.pics.push({
         type: type,
         saveName,
@@ -369,7 +370,7 @@ export default {
     },
     handleRemove(file) {
       /*处理移除主页图片的操作*/
-      this.goodsForm.pics=this.goodsForm.pics.filter(item => {
+      this.goodsForm.pics = this.goodsForm.pics.filter(item => {
         if (item.saveName !== file.saveName) {
           return item
         }
@@ -383,46 +384,34 @@ export default {
         }
       })
     },
-    submitAll() {
-      let loadingInstance = this.$loading({
-        lock: true,
-        text: '添加商品中...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.5)'
-      });
-      const data=this.goodsForm;
-      data.service=data.service.join(',');
-      (async () => {
-        try {
-          await this.$confirm('请确认是否继续操作，该操作会将商品提交到仓库', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          })
-          const {data: res} = await this.axios.post('/goods/addGoods', this.goodsForm);
-          if (res.code === 200) {
+    async submitAll() {
+      this.$loading.show()
+      try {
+        await this.$confirm('请确认是否继续操作，该操作会将商品提交到仓库', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        this.axios.post('/goods/addGoods', this.goodsForm).then(res => {
+          if (res.data.code === 200) {
             this.$notify({
               title: 'ok',
               message: '商品已添加至仓库',
               type: 'success'
             });
-            await this.$router.push('/goods/list');
-            await this.$nextTick(() => { // 以服务的方式调用的 Loading
-              loadingInstance.close();
-            });
-          } else {
-            this.$message.error('添加失败，请重试或联系管理员！');
-            this.$nextTick(() => { // 以服务的方式调用的 Loading
-              loadingInstance.close();
-            });
+            this.$router.push('/goods/list');
           }
-        } catch (e) {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        }
-      })()
+        })
+            .finally(() => {
+              this.$loading.close()
+            })
+      } catch (e) {
+        this.$loading.close()
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      }
     },
   },
   filters: {

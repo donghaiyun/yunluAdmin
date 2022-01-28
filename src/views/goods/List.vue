@@ -124,7 +124,7 @@ export default {
       multipleSelection: [],
       status: '2',
       tableData: [],
-      picUrl: this.$global.URL + '/image/',
+      picUrl: this.$global.URL + '/images/',
     }
   },
   methods: {
@@ -148,20 +148,19 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    getGoodsList(sid) {
+    async getGoodsList(sid) {
       /*获取商品列表数据*/
-      (async () => {
-        const {data} = await this.axios.get('/goods/getGoodsList', {
-          params: {sid}
-        })
-        const list = data.data
-        list.forEach(item => {
-          item.createTime = this.moment(item.createTime).format('YYYY-MM-DD HH:mm');
-          item.stock = item.skus[0].stock;
-          item.totalsale = item.skus[0].totalsale
-        })
-        this.tableData = list;
-      })()
+      this.$loading.show({target:'.el-table'})
+      const {data} = await this.axios.get('/goods/getGoodsList', {
+        params: {sid}
+      }).finally(()=>this.$loading.close())
+      const list = data.data
+      list.forEach(item => {
+        item.createTime = this.moment(item.createTime).format('YYYY-MM-DD HH:mm');
+        item.stock = (item.skus[0]||{}).stock||0;
+        item.totalsale = (item.skus[0]||{}).totalsale||0
+      })
+      this.tableData = list;
     },
     async updateStatus(status) {
       if (this.multipleSelection.length > 1) {
